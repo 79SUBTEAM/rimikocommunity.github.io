@@ -1,0 +1,82 @@
+
+*{
+  margin: 0;
+  padding: 0;
+}
+body{
+  background: #ffffff;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.socialIcons{
+  display: flex;
+  justify-content: start;
+}
+.socialIcons a{
+  display: flex;
+  background: #fff;
+  height: 45px;
+  width: 45px;
+  margin: 0 15px;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 6px 6px 10px -1px rgba(0,124,196,0.15),
+              -6px -6px 10px -1px rgba(46, 46, 46, 0.7);
+  border: 1px solid rgba(0, 124, 196, 0);
+  transition: transform 0.5s
+}
+.socialIcons a i{
+  font-size: 2em;
+  color: #777;
+  transition: transform 0.5s;
+}
+/* Hover affect on social media icon */
+.socialIcons a:hover{
+  box-shadow:inset 4px 4px 6px -2px rgba(0,0,0,0.2),
+              inset -4px -4px 6px -1px rgba(49, 49, 49, 0.7),
+                    -0.5px -0.5px 0px -1px rgba(255,255,255,1),
+                    0.5px 0.5px 0px rgba(0,0,0,0.15),
+                    0px 12px 10px -10px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0, 124, 196, 0.1);
+  transform: translateY(2px);
+}
+.socialIcons a:hover i{
+  transform: scale(0.90);
+}
+a:hover .fa-facebook{
+  color: #3b5998;
+}
+a:hover .fa-youtube{
+  color: #f00;
+}
+h3{
+  font-family: sans-serif;
+  font-weight: normal;
+  font-size: 20px;
+  letter-spacing: 4px;
+  padding: 20px 0 20px;
+  color: #ffffff;
+  text-align: left;
+}
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #ffffff;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: rgb(121,121,240);
+  background: linear-gradient(90deg, rgba(121,121,240,1) 0%, rgba(0,212,255,1) 61%, rgba(19,19,85,1) 100%); 
+}
+.NameFtThanhDieu {
+  color: white;
+}
