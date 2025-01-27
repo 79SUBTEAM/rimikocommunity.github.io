@@ -1,0 +1,219 @@
+main #home {
+    background-image: url(bg.jpg);
+    background-size: cover;
+    height: 100vh;
+    max-height: 1200px;
+    padding-top: 80px;
+    /* animation: showing 0.3s forwards ease-in-out; */
+}
+
+main #home #particle {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 1200px;
+    z-index: 1;
+}
+
+main #home .text {
+    padding: 0 20px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+main #home .text b .cursor {
+    border-left: solid 2px white;
+    animation: cursorAnimation 1s infinite;
+}
+
+main .tab {
+    padding-bottom: 80px;
+    padding-top: 125px;
+    opacity: 0;
+    /* animation: showing 0.5s forwards ease-in-out; */
+}
+
+main .tab .title {
+    padding: 10px 30px;
+    width: fit-content;
+    margin: auto;
+    border-bottom: solid 5px rgb(85, 0, 155);
+    transition: 0.2s;
+    margin-bottom: 50px;
+    user-select: none;
+}
+
+main .tab .title:hover {
+    background-color:rgb(85, 0, 155, 0.2);
+    border-radius: 5px;
+    border: solid 1px rgb(85, 0, 155);
+    border-width: 3px;
+    box-shadow: 0 4px 30px rgba(85, 0, 155);
+}
+
+main #products .ctn {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+main #products .ctn .card {
+    width: 300px;
+    margin: 15px;
+    background-color:rgb(85, 0, 155, 0.2);
+    padding: 30px;
+    border-radius: 15px;
+    border: dashed 1px rgb(85, 0, 155);
+    box-shadow: 0 4px 30px rgba(85, 0, 155);
+}
+
+main #products .ctn .card .name {
+    margin-bottom: 10px;
+}
+
+main #products .ctn .card .name .icon {
+    display: grid;
+    width: 70px;
+    height: 70px;
+    font-size: 20px;
+    background-color: rgb(85, 0, 155, 0.2);
+    border-radius: 50%;
+    margin-bottom: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+main #products .ctn .card .name .icon i::before {
+    display: block;
+    height: 20px;
+}
+
+main #products .ctn .card .description .readmore {
+    padding: 5px 5px 5px 10px;
+    border: solid 1px rgb(85, 0, 155);
+    width: fit-content;
+    border-radius: 10px;
+    margin-top: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* main #products .ctn .card .description {
+    text-align: justify;
+} */
+
+main #products .ctn .card .description .readmore * {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+main #products .ctn .card .description .readmore:hover {
+    background-color:rgb(85, 0, 155, 0.5);
+}
+
+main #products .ctn .card .description .readmore:hover i {
+    animation: arrow_hover 0.6s forwards ease-in-out;
+}
+
+/*  */
+main #special .ctn {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+main #special .ctn .card {
+    width: 300px;
+    margin: 15px;
+    padding: 30px;
+    border-radius: 15px;
+    border: dashed 1px rgb(102, 102, 102);
+    transition: 0.3s;
+}
+
+main #special .ctn .card:hover {
+    background-color:rgb(85, 0, 155, 0.2);
+    border: dashed 1px rgb(85, 0, 155);
+    box-shadow: 0 4px 30px rgba(85, 0, 155);
+    scale: 1.05;
+}
+
+main #special .ctn .card .name {
+    margin-bottom: 10px;
+}
+
+main #special .ctn .card .name .icon {
+    display: grid;
+    width: 70px;
+    height: 70px;
+    font-size: 20px;
+    background-color: rgb(85, 0, 155, 0.2);
+    border-radius: 50%;
+    margin-bottom: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+main #special .ctn .card .name .icon i::before {
+    display: block;
+    height: 20px;
+}
+
+main #special .ctn .card .description .readmore {
+    padding: 5px 5px 5px 10px;
+    border: solid 1px rgb(85, 0, 155);
+    width: fit-content;
+    border-radius: 10px;
+    margin-top: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* main #products .ctn .card .description {
+    text-align: justify;
+} */
+
+main #special .ctn .card .description .readmore * {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+main #special .ctn .card .description .readmore:hover {
+    background-color:rgb(85, 0, 155, 0.5);
+}
+
+@media only screen and (max-width: 660px) {
+    
+}
+
+@keyframes arrow_hover {
+    0% {
+        transform: none;
+    }
+    25% {
+        transform: translateX(2.5px);
+    }
+    75% {
+        transform: translateX(-2.5px);
+    }
+    100% {
+        transform: none;
+    }
+}
+
+@keyframes cursorAnimation {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

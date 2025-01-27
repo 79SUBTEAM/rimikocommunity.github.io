@@ -1,0 +1,132 @@
+@font-face {
+font-family: montserrat;
+src: url(https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: montserrat;
+}
+
+a {
+    text-decoration: none;
+    color: #0040ff;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    height: 100%;
+    background-color: black;
+    color: white;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+header {
+    position: fixed;
+    z-index: 10;
+    background-color: rgba(176, 79, 255, 0.1);
+    padding: 25px 50px;
+    width: 100%;
+    backdrop-filter: blur(5px);
+    border-bottom: solid 1px rgba(176, 79, 255, 0.569);
+    user-select: none;
+}
+
+header .icon {
+    height: 30px;
+    width: fit-content;
+}
+
+header .toggle {
+    float: right;
+    font-size: 20px;
+    margin-top: 3px;
+    transition: 0.3s;
+    cursor: pointer;
+    user-select: none;
+    display: none;
+}
+
+header .toggle i {
+    width: 17.5px
+}
+
+header .link {
+    display: flex;
+    float: right;
+    height: fit-content;
+    width: fit-content;
+    position: relative;
+    margin-top: 5px;
+}
+
+header .link .item {
+    display: inline-block;
+    margin-left: 20px;
+    transition: 0.3s;
+    cursor: pointer;
+    user-select: none;
+}
+
+header :where(.toggle, .link .item):hover {
+    color: #0066ff;
+}
+
+header .link .item * {
+    display: inline-block;
+    font-size: 18px;
+    margin-left: 2px;
+}
+
+footer {
+    user-select: none;
+    background-color: rgba(176, 79, 255, 0.1);
+    padding: 25px 50px;
+    width: 100%;
+    backdrop-filter: blur(5px);
+    border-top: solid 1px rgba(176, 79, 255, 0.569);
+}
+
+@media only screen and (min-width: 661px) {
+    header .link {
+        display: block !important;
+    }
+}
+
+@media only screen and (max-width: 660px) {
+    header .toggle {
+        display: block;
+    }
+
+    header .link {
+        display: none;
+        flex-direction: column;
+        left: -50%;
+        transform: translateX(50%);
+        padding-top: 50px;
+        margin-right: -10px;
+    }
+
+    header .link .item {
+        padding: 15px;
+        text-align: center;
+    }
+}
+
+@keyframes showing {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
