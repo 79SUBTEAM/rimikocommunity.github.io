@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" type="text/css">
     <meta name='robots' content='max-image-preview:large' />
     <title>Rimiko Community - Nền Tảng Công Nghệ Mạng</title>
     <meta name="keywords" content="rimiko,rimiko,rimiko,tools,tool tối ưu,fix lag window,tool fix lag">
@@ -12,15 +13,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
     <script type='text/javascript' src='https://releases.jquery.com/git/ui/jquery-ui-git.js'></script>
+    <script>
+        document.onreadystatechange = function() {
+            if (document.readyState == 'complete') {
+                $(".loading").fadeOut(200)
+                $("body").css("overflow-y","unset")
+                $("main #home .text h1").delay(300).css("animation", "showing 0.5s forwards ease-in-out");
+                writeAnimation("The ultimate library for modifying Windows.",$("main #home .text #homeText")[0], delayTime=800, timeout=50);
+                document.onreadystatechange = () => {}
+            }
+        };
+    </script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.js" integrity="sha512-ABdY/XvDDH+5fzlCDOk/NEmasevb1A/b13MhOQuVId6ajXR0v81M2IHbC5TDSWWi8FtlQQTqhqaVBJMCCGR/5w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="general.css">
     <link rel="stylesheet" href="hp.css">
-    <script src="https://h3l2f.github.io/rimiko.js"></script>
+    <script src="hp.js"></script>
     <link rel="shortcut icon" href="logo.png" type="image/png">
 </head>
 <body>
+    <div class="loading">
+        <div class="loader"></div>
+    </div>
     <header>
         <div class="toggle" onclick='$("header .link").slideToggle().css("display","flex"); $("header .toggle i").toggle()'>
             <i class="fa-solid fa-bars"></i>
@@ -52,7 +67,7 @@
         <div id="home">
             <div id="particle"></div>
             <div class="text">
-                <h1 style="font-size: 70px; animation: showing 0.5s forwards ease-in-out; ">Welcome to Rimiko</h1>
+                <h1 style="font-size: 70px; opacity: 0;">Welcome to Rimiko</h1>
                <b><b id="homeText"></b><b class="cursor"></b></b>
             </div>
         </div>
@@ -226,7 +241,7 @@
                 &nbsp;<i class="fa-brands fa-youtube" link="https://www.youtube.com/channel/UCk3ZX7h-sKCRForZ3NPbmCg"></i>
             </div>
         </div>
-        <h6>Made with <3 by <a href="https://h3l2f.site">h3l2f</a>.</h6>
+        <h6>Made with <i style="color: #0040ff" class="fa-solid fa-heart"></i> by <a href="https://h3l2f.site">h3l2f</a>.</h6>
     </footer>
 </body>
 </html>

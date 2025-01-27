@@ -14,7 +14,7 @@ $.fn.isInViewport = function() {
     var viewportTop = $(window).scrollTop();
     var viewportBottom = viewportTop + $(window).height();
 
-    return elementBottom > viewportTop+80 && elementTop < viewportBottom+80;
+    return elementBottom > viewportTop+80 && elementTop < viewportBottom-80;
 };
 
 function writeAnimation(text, element, delayTime=0, timeout=10, i=0) {
@@ -49,7 +49,6 @@ $(document).ready(()=>{
             for (i = 0; i < $("main .tab").length; i++) {
                 if ($($("main .tab")[i]).isInViewport()) $($("main .tab")[i]).css({"animation": "showing 0.5s ease-in-out forwards"});
             }
-        }, 15)
+        }, 25)
     });
-    writeAnimation("The ultimate library for modifying Windows.",$("main #home .text #homeText")[0], delayTime=200, timeout=50);
 })
