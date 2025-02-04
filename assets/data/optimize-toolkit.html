@@ -1,103 +1,217 @@
-<!doctype html>
-<html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=0.0, viewport-fit=cover">
-            <meta name='robots' content='max-image-preview:large' />
-            <meta property="og:url" content="https://rimiko.is-a.dev/" />
-            <link rel="shortcut icon" type="image/png" href="https://files.catbox.moe/9yv6ly.png"/>
-            <title>Rimiko Community - Nền Tảng Công Nghệ Mạng</title>
-            <meta name="keywords" content="rimiko,rimiko,rimiko,tools,tool tối ưu,fix lag window,tool fix lag">
-            <meta name="description" content="Các Tools Fix Lag Windows,Window Lite Mang Đến Trải Nghiệm Mượt Mà Cho Người Dùng">
-            <meta property="og:description" content="Các Tools Fix Lag Windows,Window Lite Mang Đến Trải Nghiệm Mượt Mà Cho Người Dùng"/>
-            <meta property="og:title" content="Rimiko Community - Nền Tảng Công Nghệ Mạng" />
-            <link rel="canonical" href="https://noithattoha.com/"/>
-            <meta property="og:locale" content="vi_VN" />
-            <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.min.css" rel="stylesheet">
-            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shorthandcss@1.1.1/dist/shorthand.min.css" />
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:200,300,400,500,600,700,800,900&display=swap" />
-            <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css" />
-            <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-            <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
-            <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-            <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> <!-- stats.js lib --> 
-            <link rel="stylesheet" href="../css/bootstrap.min.css">
-            <link rel="stylesheet" href="../css/duyhoang.css">
-            <link rel="stylesheet" href="../css/tooplate-barista.css">
-    </head>
+<html>
+<head>
+    <!-- Code By Duy Hoàng -->
+    <!-- Discord : duyhoangg.v2 -->
+    <!-- Hãy Tôn Trọng Tác Giả -->
+    <meta charset="UTF-8">
+    <meta name="robots" content="max-image-preview:large">
+    <title>Rimiko Community - Nền Tảng Công Nghệ Mạng</title>
+    <meta name="keywords" content="rimiko,rimiko,rimiko,tools,tool tối ưu,fix lag window,tool fix lag">
+    <meta name="description" content="Các Tools Fix Lag Windows,Window Lite Mang Đến Trải Nghiệm Mượt Mà Cho Người Dùng">
+    <meta property="og:description" content="Các Tools Fix Lag Windows,Window Lite Mang Đến Trải Nghiệm Mượt Mà Cho Người Dùng">
+    <meta property="og:title" content="Rimiko Community - Nền Tảng Công Nghệ Mạng">
+    <meta property="og:locale" content="vi_VN">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="general.css">
+    <link rel="stylesheet" href="hp.css">
+    <link rel="shortcut icon" href="logo.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .slide-in {
+            animation: slideIn 1s ease-in-out;
+        }
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .icon-bounce:hover i {
+            animation: iconBounce 0.5s ease-in-out infinite;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        header {
+            position: fixed;
+            z-index: 10;
+            background-color: rgba(176, 79, 255, 0.1);
+            padding: 25px 50px;
+            width: 100%;
+            backdrop-filter: blur(5px);
+            border-bottom: solid 1px rgba(176, 79, 255, 0.569);
+        }
+        header .icon {
+            height: 30px;
+            width: fit-content;
+        }
+        header .toggle {
+            float: right;
+            font-size: 20px;
+            margin-top: 3px;
+            transition: 0.3s;
+            cursor: pointer;
+            user-select: none;
+            display: none;
+        }
+        header .toggle i {
+            width: 17.5px;
+        }
+        header .link {
+            display: flex;
+            float: right;
+            height: fit-content;
+            width: fit-content;
+            position: relative;
+            margin-top: 5px;
+        }
+        header .link .item {
+            display: inline-block;
+            margin-left: 20px;
+            transition: 0.3s;
+            cursor: pointer;
+            user-select: none;
+        }
+        header :where(.toggle, .link .item):hover {
+            color: #0066ff;
+        }
+        header .link .item * {
+            display: inline-block;
+            font-size: 18px;
+            margin-left: 2px;
+        }
+        .background {
+            background: url('https://wallpapers.com/images/file/black-blur-background-b21117e1rgm111p3.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0.5;
+        }
+        .modern-button {
+            background: #1f2937;
+            color: white;
+            padding: 12px 24px;
+            border: 2px solid #4b5563;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modern-button:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .modern-button i {
+            margin-right: 8px;
+        }
+        .modern-button:hover i {
+            animation: iconBounce 0.5s ease-in-out infinite;
+        }
+        @media only screen and (min-width: 661px) {
+            header .link {
+                display: block !important;
+            }
+        }
+        @media only screen and (max-width: 660px) {
+            header .toggle {
+                display: block;
+            }
+            header .link {
+                display: none;
+                flex-direction: column;
+                left: -50%;
+                transform: translateX(50%);
+                padding-top: 50px;
+                margin-right: -10px;
+            }
+            header .link .item {
+                padding: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.toggle').click(function() {
+                $('header .link').slideToggle().css('display','flex');
+                $('header .toggle i').toggle();
+            });
 
-    
-    <body class="bg-black muli" style="overflow-x: hidden;">
-                <div id="particles-js"></div>
-                <div id="bg"></div>
-                <header class="header">
-                    <a href="https://rimiko.is-a.dev/" class="logo">
-                        <img src="https://files.catbox.moe/9yv6ly.png" width="50" height="50" alt="">
-                        </a>
-                    </a>
-                    <i class='bx bx-menu' id="menu-icon"></i>
-                    <nav class="navbar">
-                        <a href="https://rimiko.is-a.dev/#home"><i class="fa-solid fa-house"></i> Home</a>
-                        <a href="https://rimiko.is-a.dev/#features"><i class="fa-solid fa-cloud"></i> Features</a>
-                        <a href="https://rimiko.is-a.dev/#pricing"><i class="fa-solid fa-cart-shopping"></i> Special</a>
-                        <a href="https://discord.gg/krTuHcVps7"><i class="fa-brands fa-discord"></i> Community</a>
-                    </nav>
-                </header>
-                <div class="nav-bg"></div>
-                
-
-                <section class="booking-section section-padding">
-                    <div class="container">
-                        <div class="row">
-    
-                            <div class="col-lg-10 col-12 mx-auto">
-                                <div class="booking-form-wrap text-center">
-                                    <div class="row">
-                                        <div class="col-lg-7 col-12 p-0 mx-auto">
-                                            <form class="custom-form booking-form" action="#" method="post" role="form">
-                                                <div class="text-center mb-4 pb-lg-2">
-    
-                                                    <h3 class="text-white">4</h3>
-                                                </div>
-    
-                                                <div class="booking-form-body">
-                                                    <div class="row" style="text-align: left;">
-                                                        <div class="row">
-                                                            <h2 class="text-white" style="text-align: center;">Optimization Toolkits</h2>
-                                                            <div class="col-lg-12 col-12">
-                                                                <p class="text-white">1. GhostSpectre </p><button onclick="location.href='https://drive.google.com/file/d/162A3DMCo1bW1qMwTzgk7MJ1hjP2gzK4g/view?usp=sharing'" type="button" class="glow-on-hover">Watch</button>
-                                                                <p class="text-white">2. Nexus Toolkit </p><button onclick="location.href='https://www.youtube.com/watch?v=-rbjS_UWsHw&t=34s'" type="button" class="glow-on-hover">Watch</button>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                             </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-    
-                            </div>
-                        </div>
-                    </section>
-
-
-                
-                <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet"  type='text/css'>
-                <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-                <script src="https://unpkg.com/feather-icons"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15.0.0/dist/smooth-scroll.polyfills.min.js"></script>
-                <script src="../js/script.js"></script>
-                <script src="../js/nguyenduyhoang.js"></script>
-                <script src="../js/particles.js"></script>
-                <style>
-                    html,body{cursor:url("https://1.bp.blogspot.com/-qbWo9mPKO2Y/YL9utYdQBdI/AAAAAAAAFs4/mtjGu6u2uGwtJsT4gZG4lbhLV1a5lG6OQCLcBGAsYHQ/s0/mouse-f1.png"), auto;}
-                    a:hover{cursor:url("https://1.bp.blogspot.com/-nYv2dLl3oXY/YL9utYBCh8I/AAAAAAAAFtA/wII4lVw5w4k-4isGMY41heTqk8U4TJujgCLcBGAsYHQ/s0/mouse-f2.png"), auto;}
-                </style>
-    </body>
+            $('.item').click(function() {
+                window.location.href = $(this).attr('link');
+            });
+        });
+    </script>
+</head>
+<br class="bg-black text-white font-sans" style="font-family: 'Montserrat', sans-serif;">
+    <div class="background"></div>
+    <!-- Navigation Bar -->
+    <header>
+        <div class="toggle cursor-pointer">
+            <i class="fa-solid fa-bars"></i>
+            <i class="fa-solid fa-xmark" style="display: none"></i>
+        </div>
+        <div class="link hidden md:flex space-x-4">
+            <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#home">
+                <i class="fa-solid fa-house"></i>
+                <h4>home</h4>
+            </div>
+            <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#products">
+                <i class="fa-solid fa-cloud"></i>
+                <h4>products</h4>
+            </div>
+            <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#special">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <h4>special</h4>
+            </div>
+            <div class="item flex items-center space-x-2 cursor-pointer" link="https://discord.gg/TPjRYfU69u">
+                <i class="fa-brands fa-discord"></i>
+                <h4>community</h4>
+            </div>
+        </div>
+        <div class="icon cursor-pointer" link="/">
+            <img src="logo.png" alt="icon" width="30">
+        </div>
+    </header>
+    <!-- Main Content -->
+    <div class="flex flex-col items-center justify-center min-h-screen text-center px-4">
+        <img src="rimiko.png" alt="Linear app icon" class="h-24 w-24 mb-6 slide-in" width="200" height="150"/>
+        <h1 class="text-3xl font-semibold mb-4 slide-in gradient-text">Optimization Toolkits</h1>
+        <div class="flex flex-wrap justify-center gap-4 mb-4 slide-in w-full max-w-4xl">
+            <button class="modern-button" onclick="window.location.href='https://drive.google.com/file/d/162A3DMCo1bW1qMwTzgk7MJ1hjP2gzK4g/view'">
+                <i class="fa-solid fa-video"></i>GhostSpectre
+            </button>
+            <button class="modern-button" onclick="window.location.href='https://www.youtube.com/watch?v=-rbjS_UWsHw&t=34s'">
+                <i class="fa-solid fa-video"></i>Nexus Toolkit
+            </button>
+        </div>
+        <p class="text-gray-400 mb-4 slide-in">Hãy xem video để biết cách sử dụng</br>All tools are collected !</p>
+    </div>
+</body>
 </html>
