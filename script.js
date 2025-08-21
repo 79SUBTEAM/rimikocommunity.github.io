@@ -31,22 +31,81 @@ carousel?.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') scrollByCard(-1);
 });
 
-// Drag to scroll (desktop/mobile) with edge resistance and proper cursor states
+// Drag to scroll with smooth mouse-drag and native touch inertia
 let isDragging = false;
+let isMouseDrag = false;
 let dragStartX = 0;
 let dragStartScrollLeft = 0;
 let lastMoveX = 0;
+let lastMoveTime = 0;
+let velocityX = 0; // px/ms
+let rafId = 0;
+let momentumId = 0;
 
 function getPointX(e) {
-  return e.touches ? e.touches[0].pageX : e.pageX;
+  return e.touches ? e.touches[0].pageX : (e.pageX ?? (e.clientX || 0));
+}
+
+function scheduleScrollLeft(target) {
+  if (!carousel) return;
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(() => {
+    rafId = 0;
+    carousel.scrollLeft = target;
+  });
+}
+
+function stopMomentum() {
+  if (momentumId) cancelAnimationFrame(momentumId);
+  momentumId = 0;
+}
+
+function startMomentum(initialVelocityPxPerMs) {
+  if (!carousel) return;
+  stopMomentum();
+  let v = initialVelocityPxPerMs; // px/ms
+  const friction = 0.92; // decay per frame
+  let prevTs = performance.now();
+
+  const maxScroll = Math.max(0, carousel.scrollWidth - carousel.clientWidth);
+
+  function step(ts) {
+    const dt = Math.max(0.001, ts - prevTs); // ms
+    prevTs = ts;
+
+    // Apply velocity to scroll position
+    const delta = v * dt; // px
+    const next = Math.min(maxScroll, Math.max(0, carousel.scrollLeft - delta));
+    carousel.scrollLeft = next;
+
+    // Reverse direction if we hit edges to avoid sticking overscroll
+    if (next <= 0 || next >= maxScroll) {
+      v = 0;
+    }
+
+    // Apply friction
+    v *= Math.pow(friction, dt / 16); // normalize decay to ~60fps
+
+    if (Math.abs(v) < 0.02) {
+      momentumId = 0;
+      return;
+    }
+    momentumId = requestAnimationFrame(step);
+  }
+
+  momentumId = requestAnimationFrame(step);
 }
 
 function onPointerDown(e) {
   if (!carousel) return;
   isDragging = true;
+  isMouseDrag = !(e.touches || e.pointerType === 'touch');
   dragStartX = getPointX(e);
   dragStartScrollLeft = carousel.scrollLeft;
   lastMoveX = dragStartX;
+  lastMoveTime = performance.now();
+  velocityX = 0;
+  stopMomentum();
   carousel.classList.add('is-dragging');
 }
 
@@ -54,28 +113,49 @@ function onPointerMove(e) {
   if (!isDragging) return;
   const pointX = getPointX(e);
   const deltaX = pointX - dragStartX;
+
+  // Let touch devices use native scrolling for the smoothest inertia
+  if (!isMouseDrag) return;
+
+  const now = performance.now();
+  const dt = Math.max(1, now - lastMoveTime);
+  const dx = pointX - lastMoveX;
+  // Low-pass filter for velocity for stability
+  const instantV = dx / dt; // px/ms
+  velocityX = 0.85 * velocityX + 0.15 * instantV;
   lastMoveX = pointX;
+  lastMoveTime = now;
+
   // natural scroll: invert
   const target = dragStartScrollLeft - deltaX;
-  carousel.scrollLeft = target;
+  scheduleScrollLeft(target);
+  // Prevent text selection while dragging with mouse
+  e.preventDefault?.();
 }
 
 function onPointerUp() {
   if (!isDragging) return;
   isDragging = false;
   carousel.classList.remove('is-dragging');
+  // Apply momentum only for mouse drags
+  if (isMouseDrag) {
+    // Convert to px/ms towards scrollLeft direction (invert)
+    const v = velocityX;
+    if (Math.abs(v) > 0.02) {
+      startMomentum(v);
+    }
+  }
 }
 
 if (carousel) {
-  // Mouse
+  // Mouse drag (manual)
   carousel.addEventListener('mousedown', onPointerDown);
   window.addEventListener('mouseup', onPointerUp);
   window.addEventListener('mousemove', onPointerMove);
-  // Touch
+  // Touch: rely on native scrolling (no manual scrollLeft updates)
   carousel.addEventListener('touchstart', onPointerDown, { passive: true });
-  carousel.addEventListener('touchend', onPointerUp);
-  carousel.addEventListener('touchcancel', onPointerUp);
-  carousel.addEventListener('touchmove', onPointerMove, { passive: true });
+  carousel.addEventListener('touchend', onPointerUp, { passive: true });
+  carousel.addEventListener('touchcancel', onPointerUp, { passive: true });
 }
 
 // Show/hide next/prev buttons at the edges
