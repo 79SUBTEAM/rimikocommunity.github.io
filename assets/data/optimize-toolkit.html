@@ -55,10 +55,61 @@
             width: 100%;
             backdrop-filter: blur(5px);
             border-bottom: solid 1px rgba(176, 79, 255, 0.569);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        header .icon {
-            height: 30px;
-            width: fit-content;
+        .logo {
+            height: 56px;
+            width: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+        
+        .right-buttons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .nav-media {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border-radius: 18px;
+            background: rgba(20,22,30,.35);
+            border: 1px solid rgba(124,58,237,.25);
+            line-height: 0;
+        }
+        
+        .nav-media .media-link {
+            display: inline-grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border-radius: 50%;
+            color: #e6ecff;
+            background: transparent;
+            transition: all .25s ease;
+        }
+        
+        .nav-media .media-link:hover {
+            color: #fff;
+            filter: drop-shadow(0 4px 10px rgba(59,130,246,.35));
+        }
+        
+        .nav-media i {
+            font-size: 18px;
+            line-height: 1;
         }
         header .toggle {
             float: right;
@@ -74,26 +125,39 @@
         }
         header .link {
             display: flex;
-            float: right;
             height: fit-content;
             width: fit-content;
             position: relative;
-            margin-top: 5px;
+            margin: 0;
         }
         header .link .item {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             margin-left: 20px;
             transition: 0.3s;
             cursor: pointer;
             user-select: none;
+            color: #ffffff;
         }
         header :where(.toggle, .link .item):hover {
-            color: #0066ff;
+            color: #e6ecff;
+            transform: translateY(-2px);
         }
-        header .link .item * {
+        header .link .item h4 {
             display: inline-block;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+        header .link .item .icon {
+            width: 20px;
+            height: 20px;
+            color: #ffffff;
+        }
+        header .link .item i {
             font-size: 18px;
-            margin-left: 2px;
+            color: #ffffff;
         }
         .background {
             background: url('https://wallpapers.com/images/file/black-blur-background-b21117e1rgm111p3.jpg') no-repeat center center fixed;
@@ -177,26 +241,27 @@
             <i class="fa-solid fa-bars"></i>
             <i class="fa-solid fa-xmark" style="display: none"></i>
         </div>
-        <div class="link hidden md:flex space-x-4">
-            <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#home">
-                <i class="fa-solid fa-house"></i>
-                <h4>Home</h4>
-            </div>
-            <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#products">
-                <i class="fa-solid fa-cloud"></i>
-                <h4>Products</h4>
-            </div>
-            <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#special">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <h4>Special</h4>
-            </div>
-            <div class="item flex items-center space-x-2 cursor-pointer" link="https://discord.gg/TPjRYfU69u">
-                <i class="fa-brands fa-discord"></i>
-                <h4>Community</h4>
-            </div>
+        <div class="logo">
+            <a href="https://rimiko.is-a.dev">
+                <img src="logo.png" alt="icon" width="30">
+            </a>
         </div>
-        <div class="icon cursor-pointer" link="/">
-            <img src="logo.png" alt="icon" width="30">
+        <div class="right-buttons">
+            <div class="link hidden md:flex space-x-4">
+                <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#products">
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 2l9 5-9 5-9-5 9-5zm9 11l-9-5"/></svg>
+                    <h4>Products</h4>
+                </div>
+                <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#resources">
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h12a4 4 0 0 1 4 4v11H8a4 4 0 0 1-4-4V5zm0 0v11"/></svg>
+                    <h4>Resources</h4>
+                </div>
+            </div>
+            <div class="nav-media">
+                <a class="media-link" href="https://dsc.gg/rimikocommunity" aria-label="Discord" target="_blank" rel="noopener"><i class="fab fa-discord" aria-hidden="true"></i></a>
+                <a class="media-link" href="https://www.facebook.com/rimikocommunity" aria-label="Facebook" target="_blank" rel="noopener"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+                <a class="media-link" href="https://www.youtube.com/@RimikoDC" aria-label="YouTube" target="_blank" rel="noopener"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+            </div>
         </div>
     </header>
     <!-- Main Content -->
