@@ -1,233 +1,242 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" type="text/css">
-    <meta name='robots' content='max-image-preview:large' />
-    <title>Rimiko Community - Nền Tảng Công Nghệ Mạng</title>
-    <meta name="keywords" content="rimiko,rimiko,rimiko,tools,tool tối ưu,fix lag window,tool fix lag">
-    <meta name="description" content="Các Tools Fix Lag Windows,Window Lite Mang Đến Trải Nghiệm Mượt Mà Cho Người Dùng">
-    <meta property="og:description" content="Các Tools Fix Lag Windows,Window Lite Mang Đến Trải Nghiệm Mượt Mà Cho Người Dùng"/>
-    <meta property="og:title" content="Rimiko Community - Nền Tảng Công Nghệ Mạng" />
-    <meta property="og:locale" content="vi_VN" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
-    <script type='text/javascript' src='https://releases.jquery.com/git/ui/jquery-ui-git.js'></script>
-    <script>
-        document.onreadystatechange = function() {
-            if (document.readyState == 'complete') {
-                $(".loading").fadeOut(200)
-                $("body").css("overflow-y","unset")
-                $("main #home .text h1").delay(300).css("animation", "showing 0.5s forwards ease-in-out");
-                writeAnimation("The ultimate library for modifying Windows.",$("main #home .text #homeText")[0], delayTime=800, timeout=50);
-                document.onreadystatechange = () => {}
-            }
-        };
-    </script>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.js" integrity="sha512-ABdY/XvDDH+5fzlCDOk/NEmasevb1A/b13MhOQuVId6ajXR0v81M2IHbC5TDSWWi8FtlQQTqhqaVBJMCCGR/5w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="general.css">
-    <link rel="stylesheet" href="hp.css">
-    <script src="hp.js"></script>
-    <link rel="shortcut icon" href="logo.png" type="image/png">
-</head>
-<body>
-    <div class="loading">
-        <div class="loader"></div>
-    </div>
-    <header>
-        <div class="toggle" onclick='$("header .link").slideToggle().css("display","flex"); $("header .toggle i").toggle()'>
-            <i class="fa-solid fa-bars"></i>
-            <i class="fa-solid fa-xmark" style="display: none"></i>
-        </div>
-        <div class="link">
-            <div class="item" link="#home">
-                <i class="fa-solid fa-house"></i>
-                <h4>Home</h4>
-            </div>
-            <div class="item" link="#products">
-                <i class="fa-solid fa-cloud"></i>
-                <h4>Products</h4>
-            </div>
-            <div class="item" link="#special">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <h4>Special</h4>
-            </div>
-            <div class="item" link="https://discord.gg/TPjRYfU69u">
-                <i class="fa-brands fa-discord"></i>
-                <h4>Community</h4>
-            </div>
-        </div>
-        <div class="icon" link="/">
-            <img src="logo.png" alt="icon" width="30">
-        </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Concept Site</title>
+    <meta name="description" content="A crisp, modern landing with animated blob hero, products carousel, and a clean resources grid." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%233b82f6'/%3E%3Ccircle cx='26' cy='24' r='10' fill='white'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap&subset=vietnamese" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap&subset=vietnamese" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="./styles.css?v=1" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav">
+        <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-controls="primaryNav" aria-expanded="false">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+        <a class="brand" href="#home" aria-label="Logo"><img src="./logo.png" class="logo-img" alt="" /></a>
+        <ul class="nav-list" id="primaryNav">
+          <li><a id="navProducts" href="#products"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 2l9 5-9 5-9-5 9-5zm9 11l-9 5-9-5"/></svg><span data-i18n="nav.products">Products</span></a></li>
+          <li><a id="navResources" href="#resources"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h12a4 4 0 0 1 4 4v11H8a4 4 0 0 1-4-4V5zm0 0v11"/></svg><span data-i18n="nav.resources">Resources</span></a></li>
+          <li class="nav-media">
+            <a class="media-link" href="https://dsc.gg/rimikocommunity" aria-label="Discord" target="_blank" rel="noopener"><i class="fab fa-discord" aria-hidden="true"></i></a>
+            <a class="media-link" href="https://www.facebook.com/rimikocommunity" aria-label="Facebook" target="_blank" rel="noopener"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+            <a class="media-link" href="https://www.youtube.com/@RimikoDC" aria-label="YouTube" target="_blank" rel="noopener"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+          </li>
+          <li class="nav-lang"><button id="langToggle" class="btn-lang" type="button" aria-label="Switch language"><i class="fas fa-globe" aria-hidden="true"></i><span class="lang-code">EN</span></button></li>
+        </ul>
+      </nav>
+      <div class="scroll-progress" aria-hidden="true"><span></span></div>
+      <div class="nav-divider" role="presentation"></div>
     </header>
-    <main>
-        <div id="home">
-            <div id="particle"></div>
-            <div class="text">
-                <h1 style="font-size: 70px; opacity: 0;">Welcome to Rimiko</h1>
-               <b><b id="homeText"></b><b class="cursor"></b></b>
+
+    <main id="home" class="main">
+      <section class="hero landing-hero" aria-labelledby="hero-title">
+        <div class="container landing-grid">
+          <div class="landing-copy">
+            <h1 id="hero-title" data-i18n="hero.title">Welcome to Rimiko</h1>
+            <p class="lead">
+              <span data-i18n="hero.lead">The ultimate library for modifying Windows. A clean, modern toolkit with a beautiful developer experience. Explore components, automations and deep customization – built for power users.</span>
+            </p>
+            <div class="actions">
+              <a class="btn btn-primary" href="#products" data-i18n="hero.exploreNow">Explore Now</a>
+              <a class="btn btn-ghost" href="#resources" data-i18n="hero.documentation">Documentation</a>
             </div>
+          </div>
+          <aside class="landing-preview" aria-label="Preview">
+            <div class="preview-panel">
+              <div class="retro-computer" role="img" aria-label="Retro computer">
+                <div class="monitor">
+                  <div class="bezel">
+                    <div class="screen">
+                      <div class="crt-scanlines"></div>
+                      <div class="crt-glow"></div>
+                      <div class="screen-content">
+                        <span class="typewriter" id="typewriter"></span>
+                        <span class="cursor">|</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="monitor-footer">
+                    <span class="led"></span>
+                    <span class="label">R-80</span>
+                  </div>
+                </div>
+                <div class="stand"></div>
+                <div class="keyboard"></div>
+              </div>
+            </div>
+          </aside>
         </div>
-        <div id="products" class="tab">
-            <div class="title">
-                <i style="display: inline-block" class="fa-solid fa-cloud"></i>
-                &nbsp;
-                <h2 style="display: inline-block">Products</h2>
+      </section>
+
+      <section id="products" class="products-section fade-section">
+        <div class="products-decor" aria-hidden="true"></div>
+        <div class="container products-content">
+          <div class="products-intro">
+            <h2 id="productsHeading" data-i18n="products.heading">Products</h2>
+            <p data-i18n="products.description">
+              RimikoOS is a custom version of Windows created for users to use completely free of charge. It is also one of the projects developed by the Rimiko Development Community.
+            </p>
+          </div>
+
+          <div class="carousel-wrapper">
+            <div class="edge-blur" aria-hidden="true"></div>
+            <div class="carousel" id="productCarousel" tabindex="0" aria-label="Product list">
+              <article class="card">
+                <div class="card-logo" aria-hidden="true">
+                  <i class="fab fa-windows" aria-hidden="true"></i>
+                </div>
+                <h3 data-i18n="products.items.1.title">RimikoOS 10 (V5 UPDATE)</h3>
+                <p data-i18n="products.items.1.desc">A customization of Windows we are making with our partner Moonie to create a good Windows Lite for users.</p>
+                <a class="btn view-btn" href="https://rimiko.com/download/rimikoos-10-v5" target="_blank" rel="noopener" data-i18n="common.download">Download</a>
+              </article>
+              <article class="card">
+                <div class="card-logo" aria-hidden="true">
+                  <svg class="win11-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <rect x="3" y="3" width="8" height="8" rx="1.5"></rect>
+                    <rect x="13" y="3" width="8" height="8" rx="1.5"></rect>
+                    <rect x="3" y="13" width="8" height="8" rx="1.5"></rect>
+                    <rect x="13" y="13" width="8" height="8" rx="1.5"></rect>
+                  </svg>
+                </div>
+                <h3 data-i18n="products.items.2.title">RimikoOS 11 V2 (NO DEFENDER)</h3>
+                <p data-i18n="products.items.2.desc">The 2nd custom Windows we are making with our partner Moonie to create a good Windows Lite for users.</p>
+                <a class="btn view-btn" href="https://drive.google.com/file/d/1bYYUNylLwXo5tXtKMzFM7i6Y3aJsjvqH/view?usp=drive_link" target="_blank" rel="noopener" data-i18n="common.download">Download</a>
+              </article>
+              <article class="card">
+                <div class="card-logo" aria-hidden="true">
+                  <svg class="win11-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <rect x="3" y="3" width="8" height="8" rx="1.5"></rect>
+                    <rect x="13" y="3" width="8" height="8" rx="1.5"></rect>
+                    <rect x="3" y="13" width="8" height="8" rx="1.5"></rect>
+                    <rect x="13" y="13" width="8" height="8" rx="1.5"></rect>
+                  </svg>
+                </div>
+                <h3 data-i18n="products.items.3.title">RimikoOS 11 V2 (DEFENDER)</h3>
+                <p data-i18n="products.items.3.desc">As same as the first one, this version includes Windows Defender for those who want security.</p>
+                <a class="btn view-btn" href="https://drive.google.com/file/d/1hhHmQiH1gt7cS_xE-nW8Yy1VgVcbBIOj/view?usp=drive_link" target="_blank" rel="noopener" data-i18n="common.download">Download</a>
+              </article>
             </div>
-            <div class="ctn">
-                <div class="card">
-                    <div class="name">
-                        <div class="icon">
-                            <i class="fa-solid fa-gauge"></i>
-                        </div>
-                        <h2>Optimization Tools</h2>
-                    </div>
-                    <div class="description">
-                        The place to find easy-to-use optimizing tools.
-                        <div class="readmore" link="/assets/data/optimize-tools.html">
-                            <h4>Read more</h4>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="name">
-                        <div class="icon">
-                            <i class="fa-brands fa-uncharted"></i>
-                        </div>
-                        <h2>Playbook & AmeWizard</h2>
-                    </div>
-                    <div class="description">
-                        Fully-customizing your device in a mere blink. Only requires installation of the authorized version of Playbook, or using your own Playbook and run the programme within AmeWizard.
-                        <div class="readmore" link="/assets/data/playbook_ame.html">
-                            <h4>Read more</h4>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="name">
-                        <div class="icon">
-                            <i class="fa-brands fa-windows"></i>
-                        </div>
-                        <h2>Windows Lite</h2>
-                    </div>
-                    <div class="description">
-                        Windows Lite consumes less memory & CPU usage compared to the standard version, giving its user a smoother experience.
-                        <div class="readmore" link="/assets/data/window-lite.html">
-                            <h4>Read more</h4>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="name">
-                        <div class="icon">
-                            <i class="fa-solid fa-toolbox"></i>
-                        </div>
-                        <h2>Optimizations by Toolkit</h2>
-                    </div>
-                    <div class="description">
-                        Optimizing your device via Toolkit can utilize every integrated tools from different OS.
-                        <div class="readmore" link="/assets/data/optimize-toolkit.html">
-                            <h4>Read more</h4>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="name">
-                        <div class="icon">
-                            <i class="fa-solid fa-microchip"></i>
-                        </div>
-                        <h2>Programme</h2>
-                    </div>
-                    <div class="description">
-                        Files that are ready to be installed and used nigh-instantaneously.
-                        <div class="readmore" link="/assets/data/programme.html">
-                            <h4>Read more</h4>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <button class="carousel-btn prev" id="prevBtn" aria-label="Previous">&#8249;</button>
+            <button class="carousel-btn next" id="nextBtn" aria-label="Next">&#8250;</button>
+          </div>
         </div>
-        <div id="special" class="tab">
-            <div class="title">
-                <i style="display: inline-block" class="fa-solid fa-wand-magic-sparkles"></i>
-                &nbsp;
-                <h2 style="display: inline-block">Rimiko Software</h2>
-            </div>
-            <div class="ctn">
-                <div class="card">
-                    <div class="name">
-                        <div class="icon">
-                            <i class="fa-brands fa-windows"></i>
-                        </div>
-                        <h2>RimikoOS 10 (V4 UPDATE)</h2>
-                    </div>
-                    <div class="description">
-                        A customization of Windows we are making with our partner Moonie to create a good Windows Lite for users.
-                        <div class="readmore" link="https://drive.google.com/file/d/1koUociyETvp8M992DiHzDLGNTnff70DE/view?usp=sharing">
-                            <h4>Download</h4>
-                            <i class="fa-solid fa-download"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="name">
-                        <div class="icon">
-                            <i class="fa-brands fa-windows"></i>
-                        </div>
-                        <h2>RimikoOS 11 V2 (NO DEFENDER)</h2>
-                    </div>
-                    <div class="description">
-                        The 2nd custom Windows we are making with our partner Moonie to create a good Windows Lite for users.
-                        <div class="readmore" link="https://drive.google.com/file/d/1bYYUNylLwXo5tXtKMzFM7i6Y3aJsjvqH/view?usp=drive_link">
-                            <h4>Download</h4>
-                            <i class="fa-solid fa-download"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="name">
-                        <div class="icon">
-                            <i class="fa-brands fa-windows"></i>
-                        </div>
-                        <h2>RimikoOS 11 V2 (DEFENDER)</h2>
-                    </div>
-                    <div class="description">
-                        As same as the first one, this version includes Windows Defender (r) for those who want security.
-                        <div class="readmore" link="https://drive.google.com/file/d/1hhHmQiH1gt7cS_xE-nW8Yy1VgVcbBIOj/view?usp=drive_link">
-                            <h4>Download</h4>
-                            <i class="fa-solid fa-download"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </section>
+
+      <section id="resources" class="resources-section fade-section">
+        <div class="resources-decor" aria-hidden="true"></div>
+        <div class="container resources-grid">
+          <div class="resources-intro">
+            <h2 id="resourcesHeading" data-i18n="resources.heading">Resources</h2>
+            <p data-i18n="resources.description">
+              A collection of resources we have gathered to optimize the user experience with Windows!
+            </p>
+          </div>
+          <div class="resource-cards">
+            <article class="resource-card">
+              <div class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+              <h4 data-i18n="resources.cards.0.title">Optimization Tools</h4>
+              <p data-i18n="resources.cards.0.desc">The place to find easy-to-use optimizing tools.</p>
+              <a class="btn view-btn" href="/assets/data/optimize-tools.html" target="_blank" rel="noopener" data-i18n="common.view">VIEW</a>
+            </article>
+            <article class="resource-card">
+              <div class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v12m6-6H6"/></svg></div>
+              <h4 data-i18n="resources.cards.1.title">Playbook & AmeWizard</h4>
+              <p data-i18n="resources.cards.1.desc">Requires installation of the authorized version of Playbook, or using your own Playbook and run the programme within AmeWizard.</p>
+              <a class="btn view-btn" href="/assets/data/playbook_ame.html" target="_blank" rel="noopener" data-i18n="common.view">VIEW</a>
+            </article>
+            <article class="resource-card">
+              <div class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 5-9 5-9-5 9-5zm0 10l9 5-9 5-9-5 9-5z"/></svg></div>
+              <h4 data-i18n="resources.cards.2.title">Windows Lite</h4>
+              <p data-i18n="resources.cards.2.desc">Windows Lite consumes less memory & CPU usage compared to the stock version, giving its user a smoother experience.</p>
+              <a class="btn view-btn" href="/assets/data/windows-lite.html" target="_blank" rel="noopener" data-i18n="common.view">VIEW</a>
+            </article>
+            <article class="resource-card">
+              <div class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg></div>
+              <h4 data-i18n="resources.cards.3.title">Optimizations by Toolkit</h4>
+              <p data-i18n="resources.cards.3.desc">Optimizing your device via Toolkit can utilize every integrated tools from different OS.</p>
+              <a class="btn view-btn" href="/assets/data/optimize-toolkit.html" target="_blank" rel="noopener" data-i18n="common.view">VIEW</a>
+            </article>
+            <article class="resource-card">
+              <div class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h18"/></svg></div>
+              <h4 data-i18n="resources.cards.4.title">Programme</h4>
+              <p data-i18n="resources.cards.4.desc">Files that are ready to be installed and used nigh-instantaneously.</p>
+              <a class="btn view-btn" href="/assets/data/programme.html" target="_blank" rel="noopener" data-i18n="common.view">VIEW</a>
+            </article>
+            <article class="resource-card">
+              <div class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v8m-4-4h8"/></svg></div>
+              <h4 data-i18n="resources.cards.5.title">Community</h4>
+              <p data-i18n="resources.cards.5.desc">Join discussions and grow the community up together.</p>
+              <a class="btn view-btn" href="https://dsc.gg/rimikocommunity" target="_blank" rel="noopener" data-i18n="common.view">VIEW</a>
+            </article>
+          </div>
         </div>
+      </section>
     </main>
-        <script src="particle.js"></script>
-        <script src="loadparticle.js"></script>
-    <div></div>
-    <footer>
-        <div class="cpr">
-            <img style="display: inline-block" src="logo.png" alt="icon" width="30">
-            &nbsp;<h2 style="display: inline-block">Rimiko</h2>
-            <h5>Copyright (c) by Riley and Emiko. All rights reserved.</h5>
-        </div><br>
-        <div class="followus">
-            <h3 style="display: inline-block">Follow us:</h3>
-            <div style="display: inline-block" class="link">
-                &nbsp;<i class="fa-brands fa-facebook" link="https://www.facebook.com/profile.php?id=61561110728955"></i>
-                &nbsp;<i class="fa-brands fa-youtube" link="https://www.youtube.com/channel/UCk3ZX7h-sKCRForZ3NPbmCg"></i>
-            </div>
-        </div>
-        <h6>Made with <i style="color: #0040ff" class="fa-solid fa-heart"></i> by <a href="https://h3l2f.site">h3l2f</a>.</h6>
+
+    <footer id="community" class="footer">
+      <div class="container">
+        <img style="display: inline-block" src="logo.png" alt="icon" width="30">
+        &nbsp;<h2 style="display: inline-block">Rimiko</h2>
+        <p>© <span id="year"></span> Copyright (c) by Riley and Emiko. All rights reserved.</p>
+        <h6>Coded by emiko </br>Supported </i> by duyhoangg.v2 & h3l2f.</h6>
+      </div>
     </footer>
-</body>
-</html>
+
+    <script src="./script.js?v=1"></script>
+    
+    <script>
+      // Fade in/out effect for sections on scroll
+      document.addEventListener('DOMContentLoaded', function() {
+        const fadeSections = document.querySelectorAll('.fade-section');
+        
+        // Initial fade in for sections in viewport
+        fadeSections.forEach(section => {
+          if (isElementInViewport(section)) {
+            section.classList.add('fade-in');
+          }
+        });
+        
+        // Scroll event listener
+        window.addEventListener('scroll', function() {
+          fadeSections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            
+            // Check if section is in viewport
+            if (rect.top < windowHeight * 0.8 && rect.bottom > 0) {
+              // Section is coming into view - fade in
+              section.classList.add('fade-in');
+              section.classList.remove('fade-out');
+            } else if (rect.top > windowHeight || rect.bottom < 0) {
+              // Section is out of viewport - fade out
+              section.classList.remove('fade-in');
+              section.classList.add('fade-out');
+            }
+          });
+        });
+        
+        // Helper function to check if element is in viewport
+        function isElementInViewport(el) {
+          const rect = el.getBoundingClientRect();
+          return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+          );
+        }
+      });
+    </script>
+  </body>
+  </html>
+
 
