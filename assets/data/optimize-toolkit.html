@@ -14,8 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="general.css">
-    <link rel="stylesheet" href="hp.css">
+    <link rel="stylesheet" href="../../styles.css?v=1">
     <link rel="shortcut icon" href="logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
@@ -47,7 +46,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        header {
+        .legacy-header {
             position: fixed;
             z-index: 10;
             background-color: rgba(176, 79, 255, 0.1);
@@ -59,7 +58,7 @@
             align-items: center;
             justify-content: space-between;
         }
-        .logo {
+        .legacy-header .logo {
             height: 56px;
             width: 56px;
             display: flex;
@@ -67,19 +66,19 @@
             justify-content: center;
         }
         
-        .logo img {
+        .legacy-header .logo img {
             width: 48px;
             height: 48px;
             object-fit: contain;
         }
         
-        .right-buttons {
+        .legacy-header .right-buttons {
             display: flex;
             align-items: center;
             gap: 16px;
         }
         
-        .nav-media {
+        .legacy-header .nav-media {
             display: inline-flex;
             align-items: center;
             gap: 10px;
@@ -90,7 +89,7 @@
             line-height: 0;
         }
         
-        .nav-media .media-link {
+        .legacy-header .nav-media .media-link {
             display: inline-grid;
             place-items: center;
             width: 32px;
@@ -102,16 +101,16 @@
             transition: all .25s ease;
         }
         
-        .nav-media .media-link:hover {
+        .legacy-header .nav-media .media-link:hover {
             color: #fff;
             filter: drop-shadow(0 4px 10px rgba(59,130,246,.35));
         }
         
-        .nav-media i {
+        .legacy-header .nav-media i {
             font-size: 18px;
             line-height: 1;
         }
-        header .toggle {
+        .legacy-header .toggle {
             float: right;
             font-size: 20px;
             margin-top: 3px;
@@ -120,17 +119,17 @@
             user-select: none;
             display: none;
         }
-        header .toggle i {
+        .legacy-header .toggle i {
             width: 17.5px;
         }
-        header .link {
+        .legacy-header .link {
             display: flex;
             height: fit-content;
             width: fit-content;
             position: relative;
             margin: 0;
         }
-        header .link .item {
+        .legacy-header .link .item {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -140,22 +139,22 @@
             user-select: none;
             color: #ffffff;
         }
-        header :where(.toggle, .link .item):hover {
+        .legacy-header :where(.toggle, .link .item):hover {
             color: #e6ecff;
             transform: translateY(-2px);
         }
-        header .link .item h4 {
+        .legacy-header .link .item h4 {
             display: inline-block;
             font-size: 16px;
             font-weight: 600;
             margin: 0;
         }
-        header .link .item .icon {
+        .legacy-header .link .item .icon {
             width: 20px;
             height: 20px;
             color: #ffffff;
         }
-        header .link .item i {
+        .legacy-header .link .item i {
             font-size: 18px;
             color: #ffffff;
         }
@@ -197,15 +196,15 @@
             animation: iconBounce 0.5s ease-in-out infinite;
         }
         @media only screen and (min-width: 661px) {
-            header .link {
+            .legacy-header .link {
                 display: block !important;
             }
         }
         @media only screen and (max-width: 660px) {
-            header .toggle {
+            .legacy-header .toggle {
                 display: block;
             }
-            header .link {
+            .legacy-header .link {
                 display: none;
                 flex-direction: column;
                 left: -50%;
@@ -213,11 +212,17 @@
                 padding-top: 50px;
                 margin-right: -10px;
             }
-            header .link .item {
+            .legacy-header .link .item {
                 padding: 15px;
                 text-align: center;
             }
         }
+        /* Hide scrollbars but keep scrolling */
+        html { scrollbar-width: none; }
+        html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; }
+        body { -ms-overflow-style: none; }
+        /* Lock page scrolling entirely */
+        html, body { height: 100vh; overflow: hidden; }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -232,40 +237,34 @@
             });
         });
     </script>
+    <script src="../../script.js" defer></script>
 </head>
 <body class="bg-black text-white font-sans" style="font-family: 'Montserrat', sans-serif;">
     <div class="background"></div>
     <!-- Navigation Bar -->
-    <header>
-        <div class="toggle cursor-pointer">
-            <i class="fa-solid fa-bars"></i>
-            <i class="fa-solid fa-xmark" style="display: none"></i>
-        </div>
-        <div class="logo">
-            <a href="https://rimiko.is-a.dev">
-                <img src="logo.png" alt="icon" width="30">
-            </a>
-        </div>
-        <div class="right-buttons">
-            <div class="link hidden md:flex space-x-4">
-                <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#products">
-                    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 2l9 5-9 5-9-5 9-5zm9 11l-9-5"/></svg>
-                    <h4>Products</h4>
-                </div>
-                <div class="item flex items-center space-x-2 cursor-pointer" link="https://rimiko.is-a.dev/#resources">
-                    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h12a4 4 0 0 1 4 4v11H8a4 4 0 0 1-4-4V5zm0 0v11"/></svg>
-                    <h4>Resources</h4>
-                </div>
-            </div>
-            <div class="nav-media">
-                <a class="media-link" href="https://dsc.gg/rimikocommunity" aria-label="Discord" target="_blank" rel="noopener"><i class="fab fa-discord" aria-hidden="true"></i></a>
-                <a class="media-link" href="https://www.facebook.com/rimikocommunity" aria-label="Facebook" target="_blank" rel="noopener"><i class="fab fa-facebook" aria-hidden="true"></i></a>
-                <a class="media-link" href="https://www.youtube.com/@RimikoDC" aria-label="YouTube" target="_blank" rel="noopener"><i class="fab fa-youtube" aria-hidden="true"></i></a>
-            </div>
-        </div>
+    <header class="site-header">
+      <nav class="nav">
+        <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-controls="primaryNav" aria-expanded="false">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+        <a class="brand" href="../../index.html#home" aria-label="Logo"><img src="../data/logo.png" class="logo-img" alt="" /></a>
+        <ul class="nav-list" id="primaryNav">
+          <li><a href="../../index.html#products"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 2l9 5-9 5-9-5 9-5zm9 11l-9 5-9-5"/></svg><span data-i18n="nav.products">Products</span></a></li>
+          <li><a href="../../index.html#resources"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h12a4 4 0 0 1 4 4v11H8a4 4 0 0 1-4-4V5zm0 0v11"/></svg><span data-i18n="nav.resources">Resources</span></a></li>
+          <li class="nav-media">
+            <a class="media-link" href="https://dsc.gg/rimikocommunity" aria-label="Discord" target="_blank" rel="noopener"><i class="fab fa-discord" aria-hidden="true"></i></a>
+            <a class="media-link" href="https://www.facebook.com/rimikocommunity" aria-label="Facebook" target="_blank" rel="noopener"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+            <a class="media-link" href="https://www.youtube.com/@RimikoDC" aria-label="YouTube" target="_blank" rel="noopener"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+          </li>
+        </ul>
+      </nav>
+      <div class="scroll-progress" aria-hidden="true"><span></span></div>
+      <div class="nav-divider" role="presentation"></div>
     </header>
     <!-- Main Content -->
-    <div class="flex flex-col items-center justify-center min-h-screen text-center px-4">
+    <div class="flex flex-col items-center text-center px-4 pt-24">
         <img src="rimiko.png" alt="Linear app icon" class="h-24 w-24 mb-6 slide-in" width="200" height="150"/>
         <h1 class="text-3xl font-semibold mb-4 slide-in gradient-text">Optimization Toolkits</h1>
         <div class="flex flex-wrap justify-center gap-4 mb-4 slide-in w-full max-w-4xl">
