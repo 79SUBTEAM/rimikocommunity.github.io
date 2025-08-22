@@ -1,0 +1,244 @@
+/* Mobile Optimizations for Rimiko Community */
+
+/* Performance optimizations for mobile devices */
+@media (max-width: 900px) {
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Optimize touch targets */
+  .btn,
+  .nav-toggle,
+  .carousel-btn,
+  .chat-toggle {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve tap highlights */
+  .btn:active,
+  .nav-toggle:active,
+  .carousel-btn:active,
+  .chat-toggle:active {
+    -webkit-tap-highlight-color: rgba(124, 58, 237, 0.3);
+  }
+  
+  /* Optimize scrolling performance */
+  .carousel,
+  .chat-messages {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Reduce animations on mobile for better performance */
+  .card,
+  .resource-card {
+    animation-duration: 0.4s;
+  }
+  
+  /* Optimize font rendering */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Improve loading performance */
+  .fade-section {
+    will-change: auto;
+  }
+  
+  .fade-section.fade-in {
+    will-change: auto;
+  }
+}
+
+/* Ultra-mobile optimizations */
+@media (max-width: 480px) {
+  /* Reduce padding and margins for small screens */
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  
+  /* Optimize text sizes for readability */
+  .landing-copy h1 {
+    font-size: clamp(28px, 7vw, 40px);
+    line-height: 1.2;
+  }
+  
+  .landing-copy .lead {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  
+  /* Improve button sizing */
+  .btn {
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  /* Optimize card layout */
+  .card {
+    min-height: 180px;
+    padding: 16px 16px 52px;
+  }
+  
+  .card h3 {
+    font-size: 17px;
+    margin: 56px 0 8px;
+  }
+  
+  .card p {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  /* Optimize resource cards */
+  .resource-card {
+    min-height: 160px;
+  }
+  
+  .resource-card h4 {
+    font-size: 15px;
+    margin: 56px 12px 6px;
+  }
+  
+  .resource-card p {
+    font-size: 13px;
+    margin: 0 12px 44px;
+    line-height: 1.4;
+  }
+  
+  /* Improve navigation */
+  .nav {
+    padding: 10px 12px;
+  }
+  
+  .nav-list {
+    padding: 16px 12px;
+  }
+  
+  .nav-list li {
+    padding: 12px 14px;
+    margin: 6px 0;
+  }
+  
+  .nav-list a {
+    font-size: 15px;
+  }
+  
+  /* Optimize chat widget */
+  .chat-window {
+    width: calc(100vw - 24px);
+    height: 75vh;
+    bottom: 70px;
+    right: 12px;
+  }
+  
+  .chat-toggle {
+    width: 52px;
+    height: 52px;
+    font-size: 20px;
+    bottom: 16px;
+    right: 16px;
+  }
+  
+  /* Improve carousel */
+  .carousel {
+    gap: 10px;
+    padding: 10px 12px 18px;
+  }
+  
+  .carousel-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+}
+
+/* Landscape mobile optimizations */
+@media (max-width: 900px) and (orientation: landscape) {
+  .landing-hero {
+    padding: 32px 0 48px;
+  }
+  
+  .preview-panel {
+    height: clamp(150px, 25vh, 200px);
+  }
+  
+  .products-section,
+  .resources-section {
+    padding: 32px 0 48px;
+  }
+  
+  .chat-window {
+    height: 60vh;
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .logo-img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Battery saving optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .landing-copy h1,
+  .products-intro h2,
+  .resources-intro h2 {
+    animation: none;
+    background: linear-gradient(90deg, #e6ecff, #3b82f6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .card,
+  .resource-card {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .fade-section {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --glass-bg: rgba(10, 16, 32, 0.65);
+    --glass-stroke: rgba(148,163,184,.25);
+  }
+}
+
+/* Print optimizations */
+@media print {
+  .chat-widget,
+  .nav-toggle,
+  .carousel-btn {
+    display: none !important;
+  }
+  
+  .card,
+  .resource-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}

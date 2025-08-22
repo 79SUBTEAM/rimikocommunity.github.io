@@ -31,7 +31,7 @@ carousel?.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') scrollByCard(-1);
 });
 
-// Drag to scroll with smooth mouse-drag and native touch inertia
+// Enhanced drag to scroll with optimized performance
 let isDragging = false;
 let isMouseDrag = false;
 let dragStartX = 0;
@@ -41,6 +41,16 @@ let lastMoveTime = 0;
 let velocityX = 0; // px/ms
 let rafId = 0;
 let momentumId = 0;
+
+// Performance optimization variables
+let isScrolling = false;
+let scrollTimeout = null;
+let resizeTimeout = null;
+let scrollThrottle = null;
+
+// Mobile detection
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 function getPointX(e) {
   return e.touches ? e.touches[0].pageX : (e.pageX ?? (e.clientX || 0));
@@ -98,6 +108,10 @@ function startMomentum(initialVelocityPxPerMs) {
 
 function onPointerDown(e) {
   if (!carousel) return;
+  
+  // Prevent default behavior for better mobile experience
+  e.preventDefault();
+  
   isDragging = true;
   isMouseDrag = !(e.touches || e.pointerType === 'touch');
   dragStartX = getPointX(e);
@@ -106,121 +120,247 @@ function onPointerDown(e) {
   lastMoveTime = performance.now();
   velocityX = 0;
   stopMomentum();
+  
+  // Add dragging class with optimized performance
   carousel.classList.add('is-dragging');
+  
+  // Set cursor style
+  if (!isTouchDevice) {
+    carousel.style.cursor = 'grabbing';
+  }
 }
 
 function onPointerMove(e) {
   if (!isDragging) return;
+  
   const pointX = getPointX(e);
   const deltaX = pointX - dragStartX;
 
-  // Let touch devices use native scrolling for the smoothest inertia
-  if (!isMouseDrag) return;
+  // Enhanced touch handling for mobile
+  if (!isMouseDrag) {
+    // For touch devices, use native scrolling with optimized handling
+    if (isMobile) {
+      // Prevent default only if we're actually dragging
+      if (Math.abs(deltaX) > 10) {
+        e.preventDefault();
+      }
+    }
+    return;
+  }
 
+  // Mouse drag handling with improved performance
   const now = performance.now();
   const dt = Math.max(1, now - lastMoveTime);
   const dx = pointX - lastMoveX;
-  // Low-pass filter for velocity for stability
+  
+  // Enhanced velocity calculation with better stability
   const instantV = dx / dt; // px/ms
-  velocityX = 0.85 * velocityX + 0.15 * instantV;
+  velocityX = 0.8 * velocityX + 0.2 * instantV;
   lastMoveX = pointX;
   lastMoveTime = now;
 
-  // natural scroll: invert
+  // Natural scroll: invert
   const target = dragStartScrollLeft - deltaX;
   scheduleScrollLeft(target);
-  // Prevent text selection while dragging with mouse
-  e.preventDefault?.();
+  
+  // Prevent text selection while dragging
+  e.preventDefault();
 }
 
 function onPointerUp() {
   if (!isDragging) return;
+  
   isDragging = false;
+  
+  // Remove dragging class and reset cursor
   carousel.classList.remove('is-dragging');
-  // Apply momentum only for mouse drags
+  if (!isTouchDevice) {
+    carousel.style.cursor = 'grab';
+  }
+  
+  // Apply momentum only for mouse drags with enhanced handling
   if (isMouseDrag) {
     // Convert to px/ms towards scrollLeft direction (invert)
     const v = velocityX;
-    if (Math.abs(v) > 0.02) {
+    if (Math.abs(v) > 0.05) { // Increased threshold for better UX
       startMomentum(v);
     }
   }
+  
+  // Reset velocity
+  velocityX = 0;
 }
 
 if (carousel) {
-  // Mouse drag (manual)
-  carousel.addEventListener('mousedown', onPointerDown);
-  window.addEventListener('mouseup', onPointerUp);
-  window.addEventListener('mousemove', onPointerMove);
-  // Touch: rely on native scrolling (no manual scrollLeft updates)
-  carousel.addEventListener('touchstart', onPointerDown, { passive: true });
+  // Enhanced event listeners with optimized performance
+  if (!isTouchDevice) {
+    // Mouse drag (manual) - only for non-touch devices
+    carousel.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mouseup', onPointerUp);
+    window.addEventListener('mousemove', onPointerMove);
+  }
+  
+  // Touch events with optimized handling
+  carousel.addEventListener('touchstart', onPointerDown, { passive: false });
   carousel.addEventListener('touchend', onPointerUp, { passive: true });
   carousel.addEventListener('touchcancel', onPointerUp, { passive: true });
+  
+  // Set initial cursor for desktop
+  if (!isTouchDevice) {
+    carousel.style.cursor = 'grab';
+  }
 }
 
-// Show/hide next/prev buttons at the edges
+// Enhanced carousel button management with throttling
 function updateCarouselButtons() {
   if (!carousel || !prev || !next) return;
+  
   const scrollable = carousel.scrollWidth > carousel.clientWidth + 1;
-  const maxScroll = Math.max(0, carousel.scrollWidth - carousel.clientWidth - 1); // subtract 1 to avoid float rounding
+  const maxScroll = Math.max(0, carousel.scrollWidth - carousel.clientWidth - 1);
   const atStart = carousel.scrollLeft <= 1;
   const atEnd = carousel.scrollLeft >= maxScroll;
-  // If not scrollable at all, hide both buttons
-  prev.classList.toggle('is-hidden', atStart || !scrollable);
-  next.classList.toggle('is-hidden', atEnd || !scrollable);
+  
+  // Enhanced button visibility logic
+  const shouldHidePrev = atStart || !scrollable;
+  const shouldHideNext = atEnd || !scrollable;
+  
+  // Smooth transitions for button visibility
+  if (shouldHidePrev !== prev.classList.contains('is-hidden')) {
+    prev.classList.toggle('is-hidden', shouldHidePrev);
+  }
+  
+  if (shouldHideNext !== next.classList.contains('is-hidden')) {
+    next.classList.toggle('is-hidden', shouldHideNext);
+  }
 }
 
-// Update on scroll and on load
-carousel?.addEventListener('scroll', updateCarouselButtons, { passive: true });
-window.addEventListener('resize', updateCarouselButtons);
+// Throttled scroll handler for better performance
+function throttledUpdateCarouselButtons() {
+  if (scrollThrottle) return;
+  
+  scrollThrottle = requestAnimationFrame(() => {
+    updateCarouselButtons();
+    scrollThrottle = null;
+  });
+}
+
+// Enhanced event listeners with throttling
+carousel?.addEventListener('scroll', throttledUpdateCarouselButtons, { passive: true });
+
+// Debounced resize handler
+function debouncedResizeHandler() {
+  if (resizeTimeout) clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    updateCarouselButtons();
+  }, 150);
+}
+
+window.addEventListener('resize', debouncedResizeHandler);
+
+// Initial setup
 updateCarouselButtons();
 
 // Footer year
 const yearSpan = document.getElementById('year');
 if (yearSpan) yearSpan.textContent = String(new Date().getFullYear());
 
-// Mobile nav toggle
-navToggle?.addEventListener('click', () => {
+// Enhanced mobile navigation with improved UX
+navToggle?.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  
   const isOpen = nav?.classList.toggle('is-open');
   navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  
+  // Enhanced mobile menu behavior
+  if (isOpen) {
+    // Prevent body scroll when menu is open
+    document.body.style.overflow = 'hidden';
+    
+    // Focus management for accessibility
+    const firstNavLink = navList?.querySelector('a');
+    if (firstNavLink) {
+      setTimeout(() => firstNavLink.focus(), 100);
+    }
+  } else {
+    // Restore body scroll
+    document.body.style.overflow = '';
+  }
 });
 
-// Close menu on link click (mobile)
+// Enhanced navigation link handling with improved mobile UX
 navList?.addEventListener('click', (e) => {
   const link = e.target.closest('a');
   if (!link) return;
 
-  // Close mobile menu if open
-  if (nav?.classList.contains('is-open')) {
-    nav.classList.remove('is-open');
-    navToggle?.setAttribute('aria-expanded', 'false');
-  }
-
   const href = link.getAttribute('href');
   if (!href) return;
 
-  // Smooth scroll for specific anchors
-  if (href === '#products') {
-    e.preventDefault();
-    productsSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    history.replaceState(null, '', '#products');
-  } else if (href === '#home') {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    history.replaceState(null, '', '#home');
-  }
-});
-
-// Ensure any link to #home (e.g., brand logo) scrolls to very top (0)
-document.addEventListener('click', (e) => {
-  const homeAnchor = e.target?.closest?.('a[href="#home"]');
-  if (!homeAnchor) return;
-  e.preventDefault();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  history.replaceState(null, '', '#home');
+  // Enhanced mobile menu handling
   if (nav?.classList.contains('is-open')) {
     nav.classList.remove('is-open');
     navToggle?.setAttribute('aria-expanded', 'false');
+    // Restore body scroll
+    document.body.style.overflow = '';
+  }
+
+  // Enhanced smooth scrolling for specific anchors
+  if (href === '#products') {
+    e.preventDefault();
+    const targetSection = productsSection;
+    if (targetSection) {
+      const headerHeight = header?.offsetHeight || 0;
+      const targetPosition = targetSection.offsetTop - headerHeight - 20;
+      
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+      history.replaceState(null, '', '#products');
+    }
+  } else if (href === '#home') {
+    e.preventDefault();
+    window.scrollTo({ 
+      top: 0, 
+      behavior: 'smooth' 
+    });
+    history.replaceState(null, '', '#home');
+  } else if (href === '#resources') {
+    e.preventDefault();
+    const resourcesSection = document.querySelector('#resources');
+    if (resourcesSection) {
+      const headerHeight = header?.offsetHeight || 0;
+      const targetPosition = resourcesSection.offsetTop - headerHeight - 20;
+      
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+      history.replaceState(null, '', '#resources');
+    }
+  }
+});
+
+// Enhanced home anchor handling with improved UX
+document.addEventListener('click', (e) => {
+  const homeAnchor = e.target?.closest?.('a[href="#home"]');
+  if (!homeAnchor) return;
+  
+  e.preventDefault();
+  
+  // Enhanced smooth scroll to top
+  window.scrollTo({ 
+    top: 0, 
+    behavior: 'smooth' 
+  });
+  history.replaceState(null, '', '#home');
+  
+  // Enhanced mobile menu handling
+  if (nav?.classList.contains('is-open')) {
+    nav.classList.remove('is-open');
+    navToggle?.setAttribute('aria-expanded', 'false');
+    // Restore body scroll
+    document.body.style.overflow = '';
   }
 });
 
@@ -347,22 +487,55 @@ const observer = new IntersectionObserver((entries) => {
 
 sections.forEach(sec => observer.observe(sec));
 
-// If landing with #products in URL, center it after load
+// Enhanced products section handling with improved positioning
 if (location.hash === '#products' && productsSection) {
   setTimeout(() => {
-    productsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 0);
+    const headerHeight = header?.offsetHeight || 0;
+    const targetPosition = productsSection.offsetTop - headerHeight - 20;
+    
+    window.scrollTo({
+      top: targetPosition,
+      behavior: 'smooth'
+    });
+  }, 100); // Slightly longer delay for better page load
 }
 
-// Header shadow + progress bar
+// Enhanced scroll handling with throttling
+let scrollThrottleId = null;
+
 function onScroll() {
-  const y = window.scrollY || document.documentElement.scrollTop;
-  if (header) header.style.boxShadow = y > 6 ? '0 6px 16px rgba(0,0,0,.08)' : 'none';
-  const max = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = Math.max(0, Math.min(1, y / (max || 1)));
-  if (progress) progress.style.width = `${pct * 100}%`;
+  if (scrollThrottleId) return;
+  
+  scrollThrottleId = requestAnimationFrame(() => {
+    const y = window.scrollY || document.documentElement.scrollTop;
+    
+    // Enhanced header shadow with smooth transition
+    if (header) {
+      const shadow = y > 6 ? '0 6px 16px rgba(0,0,0,.12)' : 'none';
+      if (header.style.boxShadow !== shadow) {
+        header.style.boxShadow = shadow;
+      }
+    }
+    
+    // Enhanced progress bar with smooth animation
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = Math.max(0, Math.min(1, y / (max || 1)));
+    
+    if (progress) {
+      const width = `${pct * 100}%`;
+      if (progress.style.width !== width) {
+        progress.style.width = width;
+      }
+    }
+    
+    scrollThrottleId = null;
+  });
 }
+
+// Optimized scroll listener
 window.addEventListener('scroll', onScroll, { passive: true });
+
+// Initial call
 onScroll();
 
 // No 3D: CSS retro computer is rendered in HTML/CSS
@@ -448,20 +621,477 @@ function startTypewriterSequence() {
   showNextText();
 }
 
-// Start typewriter when page loads
+// Enhanced typewriter initialization with performance optimization
 function initTypewriter() {
   console.log('Initializing typewriter...');
-  setTimeout(startTypewriterSequence, 1000);
+  
+  // Check if element exists before starting
+  const typewriterElement = document.getElementById('typewriter');
+  if (!typewriterElement) {
+    console.error('Typewriter element not found!');
+    return;
+  }
+  
+  // Start with a shorter delay for better UX
+  setTimeout(startTypewriterSequence, 800);
 }
 
-document.addEventListener('DOMContentLoaded', initTypewriter);
-
-// Also try to start immediately if DOM is already loaded
+// Optimized initialization
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initTypewriter);
 } else {
-  initTypewriter();
+  // DOM already loaded, start immediately
+  setTimeout(initTypewriter, 100);
 }
+
+// Mini Chat Widget Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const chatWidget = document.getElementById('chatWidget');
+  const chatToggle = document.getElementById('chatToggle');
+  const chatWindow = document.getElementById('chatWindow');
+  const chatClose = document.getElementById('chatClose');
+  const chatMinimize = document.getElementById('chatMinimize');
+  const chatMessages = document.getElementById('chatMessages');
+  const notificationDot = document.querySelector('.notification-dot');
+  const chatInput = document.querySelector('.chat-input-field input');
+  const sendButton = document.querySelector('.chat-input-actions .fa-paper-plane').parentElement;
+
+  // Enhanced smart auto-scroll variables
+  let userHasScrolled = false;
+  let isUserAtBottom = true;
+  let scrollThrottleChat = null;
+
+  // Enhanced check if user is at bottom of chat
+  function isAtBottom() {
+    const threshold = 15; // Increased tolerance for mobile
+    return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
+  }
+
+  // Enhanced smart scroll to bottom function with throttling
+  function smartScrollToBottom() {
+    if (scrollThrottleChat) return;
+    
+    scrollThrottleChat = requestAnimationFrame(() => {
+      if (!userHasScrolled || isUserAtBottom) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      scrollThrottleChat = null;
+    });
+  }
+
+  // Enhanced track user scroll behavior with optimized performance
+  let chatScrollThrottle = null;
+  
+  chatMessages.addEventListener('scroll', function() {
+    // Enhanced throttling for better performance
+    if (chatScrollThrottle) return;
+    
+    chatScrollThrottle = requestAnimationFrame(() => {
+      isUserAtBottom = isAtBottom();
+      
+      // Enhanced auto-scroll logic
+      if (isUserAtBottom) {
+        userHasScrolled = false;
+      } else {
+        userHasScrolled = true;
+      }
+      
+      chatScrollThrottle = null;
+    });
+  }, { passive: true });
+
+  // Enable chat input for AI interaction
+  chatInput.disabled = false;
+  chatInput.placeholder = "Nhập tin nhắn...";
+
+  // ChatGPT API Configuration
+  const OPENAI_API_KEY = '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';
+  const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+
+  // System prompt for Rimiko Community context with Vietnamese focus
+  const SYSTEM_PROMPT = `Bạn là trợ lý AI của Rimiko Community - một cộng đồng phát triển Windows tùy chỉnh và các công cụ tối ưu hóa. 
+
+Thông tin về Rimiko:
+- RimikoOS: Windows tùy chỉnh nhẹ, tối ưu hiệu năng
+- Các sản phẩm: RimikoOS 10 V4/V5, RimikoOS 11 V2
+- Dịch vụ: Tối ưu Windows, công cụ thiết kế, VPN, AI tools
+- Ngôn ngữ: Ưu tiên trả lời bằng tiếng Việt, hỗ trợ cả tiếng Anh
+
+HƯỚNG DẪN TRẢ LỜI:
+1. Luôn trả lời đầy đủ và chi tiết
+2. Nếu là hướng dẫn cài đặt, liệt kê từng bước rõ ràng
+3. Nếu là giải thích, cung cấp thông tin đầy đủ
+4. Trả lời thân thiện và hữu ích
+5. Nếu không biết, đề xuất liên hệ Discord hoặc Facebook
+
+Hãy trả lời chi tiết và đầy đủ, không bỏ dở câu.`;
+
+  // Message history for context
+  let messageHistory = [
+    { role: "system", content: SYSTEM_PROMPT }
+  ];
+
+  let isFirstOpen = true;
+
+  // Toggle chat window
+  chatToggle.addEventListener('click', function() {
+    chatWindow.classList.toggle('active');
+    if (chatWindow.classList.contains('active')) {
+      // Hide notification dot when chat is opened
+      notificationDot.style.display = 'none';
+      
+      // Show welcome message on first open
+      if (isFirstOpen) {
+        setTimeout(() => {
+          typeMessage(`Chào bạn! 👋 Tôi là AI trợ lý của Rimiko Community. 
+
+Tôi có thể giúp bạn:
+• Tìm hiểu về RimikoOS và các sản phẩm
+• Hướng dẫn tối ưu Windows
+• Giải đáp thắc mắc về công cụ
+• Hỗ trợ kỹ thuật
+
+Bạn cần hỗ trợ gì không? 😊`);
+        }, 500);
+        isFirstOpen = false;
+      }
+    }
+  });
+
+  // Close chat window
+  chatClose.addEventListener('click', function() {
+    chatWindow.classList.remove('active');
+  });
+
+  // Minimize chat window
+  chatMinimize.addEventListener('click', function() {
+    chatWindow.classList.remove('active');
+  });
+
+  // Close chat when clicking outside
+  document.addEventListener('click', function(event) {
+    if (!chatWidget.contains(event.target) && chatWindow.classList.contains('active')) {
+      chatWindow.classList.remove('active');
+    }
+  });
+
+  // Prevent chat window from closing when clicking inside it
+  chatWindow.addEventListener('click', function(event) {
+    event.stopPropagation();
+  });
+
+
+
+  // Show notification dot after 3 seconds if chat is not open
+  setTimeout(() => {
+    if (!chatWindow.classList.contains('active')) {
+      notificationDot.style.display = 'block';
+    }
+  }, 3000);
+
+  // Add typing indicator effect
+  function addTypingIndicator() {
+    const typingMessage = document.createElement('div');
+    typingMessage.className = 'message received typing-indicator';
+    typingMessage.innerHTML = `
+      <div class="message-avatar">
+        <img src="assets/data/rimiko.png" alt="Rimiko Support" style="width: 32px; height: 32px; border-radius: 50%;">
+      </div>
+      <div class="message-content">
+        <div class="message-text">
+          <span class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </div>
+      </div>
+    `;
+    chatMessages.appendChild(typingMessage);
+    
+    // Smart scroll to bottom for typing indicator
+    setTimeout(() => smartScrollToBottom(), 100);
+    
+    return typingMessage;
+  }
+
+  // Remove typing indicator
+  function removeTypingIndicator(typingElement) {
+    if (typingElement && typingElement.parentNode) {
+      typingElement.parentNode.removeChild(typingElement);
+    }
+  }
+
+  // Add user message to chat
+  function addUserMessage(text) {
+    const userMessage = document.createElement('div');
+    userMessage.className = 'message sent';
+    userMessage.innerHTML = `
+      <div class="message-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="message-content">
+        <div class="message-text">${text}</div>
+      </div>
+    `;
+    chatMessages.appendChild(userMessage);
+    
+    // Smart scroll to bottom
+    setTimeout(() => smartScrollToBottom(), 100);
+  }
+
+  // Add AI message to chat
+  function addAIMessage(text) {
+    const aiMessage = document.createElement('div');
+    aiMessage.className = 'message received';
+    aiMessage.innerHTML = `
+      <div class="message-avatar">
+        <img src="assets/data/rimiko.png" alt="Rimiko Support" style="width: 32px; height: 32px; border-radius: 50%;">
+      </div>
+      <div class="message-content">
+        <div class="message-text">${text}</div>
+      </div>
+    `;
+    chatMessages.appendChild(aiMessage);
+    
+    // Smart scroll to bottom
+    setTimeout(() => smartScrollToBottom(), 100);
+  }
+
+  // Type message character by character for realistic effect
+  function typeMessage(text) {
+    const aiMessage = document.createElement('div');
+    aiMessage.className = 'message received';
+    aiMessage.innerHTML = `
+      <div class="message-avatar">
+        <img src="assets/data/rimiko.png" alt="Rimiko Support" style="width: 32px; height: 32px; border-radius: 50%;">
+      </div>
+      <div class="message-content">
+        <div class="message-text"></div>
+      </div>
+    `;
+    chatMessages.appendChild(aiMessage);
+    
+    const messageText = aiMessage.querySelector('.message-text');
+    let index = 0;
+    
+    function typeChar() {
+      if (index < text.length) {
+        messageText.textContent += text.charAt(index);
+        index++;
+        
+        // Smart scroll during typing (only if user hasn't scrolled up)
+        if (index % 5 === 0) { // Scroll every 5 characters for smooth experience
+          smartScrollToBottom();
+        }
+        
+        setTimeout(typeChar, 30 + Math.random() * 20); // Random delay for natural typing
+      }
+    }
+    
+    typeChar();
+  }
+
+  // Call ChatGPT API
+  async function callChatGPT(userMessage) {
+    try {
+      // Add user message to history
+      messageHistory.push({ role: "user", content: userMessage });
+
+      const response = await fetch(OPENAI_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: messageHistory,
+          max_tokens: 1500,
+          temperature: 0.7,
+          presence_penalty: 0.1,
+          frequency_penalty: 0.1
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const aiResponse = data.choices[0].message.content;
+
+      // Add AI response to history
+      messageHistory.push({ role: "assistant", content: aiResponse });
+
+      return aiResponse;
+    } catch (error) {
+      console.error('Error calling ChatGPT:', error);
+      return getFallbackResponse(userMessage);
+    }
+  }
+
+  // Improved fallback response system with better Vietnamese understanding
+  function getFallbackResponse(userMessage) {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    // Enhanced keyword responses based on reference code
+    const fallbackResponses = {
+      // Rimiko Community related
+      'rimiko': 'Rimiko Community là cộng đồng phát triển Windows tùy chỉnh và các công cụ tối ưu hóa. Chúng tôi cung cấp RimikoOS - phiên bản Windows nhẹ và tối ưu hiệu năng. Bạn có muốn tìm hiểu thêm về sản phẩm nào không?',
+      'rimikoos': 'RimikoOS là Windows tùy chỉnh được phát triển bởi Rimiko Community. Hiện có:\n• RimikoOS 10 V5 UPDATE\n• RimikoOS 11 V2 (có và không có Defender)\n\nBạn muốn tải phiên bản nào?',
+      'community': 'Rimiko Community được thành lập tháng 6/2024, tập trung vào trải nghiệm người dùng. Chúng tôi phát triển Windows tùy chỉnh và các công cụ tối ưu hóa.',
+      
+      // Windows optimization
+      'tối ưu': 'Để tối ưu Windows, bạn có nhiều lựa chọn:\n\n🔧 **Optimization Tools:**\n• Optimizer - Tối ưu toàn diện hệ thống\n• Hone - Công cụ tối ưu hiệu năng\n• CTT Tool - Windows optimization toolkit\n\n💾 **Memory Management:**\n• Mem Reduct - Giải phóng RAM tự động\n• Reduce Memory - Giảm sử dụng bộ nhớ\n\n🖥️ **Windows Lite:**\n• GhostSpectre Win 10 AIO - Windows 10 nhẹ\n• GhostSpectre Win 11 (22H2/23H2/24H2) - Windows 11 tối ưu\n• Tiny 10/11 Core - Windows siêu nhẹ\n\n🛠️ **Advanced Tools:**\n• GhostSpectre Toolkit - Bộ công cụ chuyên nghiệp\n• AmeWizard - Tối ưu Windows nâng cao\n• ReviOS - Windows tùy chỉnh\n• Atlas - Windows tối ưu hiệu năng\n\n📁 **Tất cả đều có trong Resources!** Vào mục Resources để tải về và xem hướng dẫn chi tiết.\n\nBạn muốn tối ưu phần nào cụ thể?',
+      'windows': 'RimikoOS là phiên bản Windows tùy chỉnh nhẹ và tối ưu. Nó giúp giảm sử dụng RAM và CPU so với Windows gốc, mang lại trải nghiệm mượt mà hơn.',
+      'lag': 'Nếu Windows bị lag, bạn có thể:\n• Cài đặt RimikoOS để tối ưu hiệu năng\n• Sử dụng Optimization Tools\n• Dọn dẹp hệ thống với Toolkit',
+      
+      // Specific optimization tools
+      'optimizer': 'Optimizer là công cụ tối ưu Windows mạnh mẽ:\n\n🔧 **Tính năng chính:**\n• Tối ưu hiệu năng hệ thống\n• Vô hiệu hóa các dịch vụ không cần thiết\n• Tối ưu registry\n• Dọn dẹp file tạm\n\n📁 **Tải về:** Vào mục Optimization Tools trong Resources\n\n💡 **Lưu ý:** Chạy với quyền Administrator để có hiệu quả tốt nhất!',
+      'hone': 'Hone là công cụ tối ưu hiệu năng Windows:\n\n⚡ **Tính năng:**\n• Tối ưu CPU và GPU\n• Giảm độ trễ hệ thống\n• Tối ưu gaming performance\n• Giải phóng tài nguyên\n\n📁 **Tải về:** Vào mục Optimization Tools trong Resources\n\n🎮 **Phù hợp cho:** Gaming và công việc nặng',
+      'ctt tool': 'CTT Tool (Chris Titus Tech Tool) là bộ công cụ tối ưu Windows:\n\n🛠️ **Tính năng:**\n• Tối ưu Windows services\n• Vô hiệu hóa telemetry\n• Tối ưu privacy settings\n• Performance tweaks\n\n📁 **Tải về:** Vào mục Optimization Tools trong Resources\n\n🔒 **An toàn:** Được phát triển bởi Chris Titus Tech',
+      'ctt': 'CTT Tool (Chris Titus Tech Tool) là bộ công cụ tối ưu Windows:\n\n🛠️ **Tính năng:**\n• Tối ưu Windows services\n• Vô hiệu hóa telemetry\n• Tối ưu privacy settings\n• Performance tweaks\n\n📁 **Tải về:** Vào mục Optimization Tools trong Resources\n\n🔒 **An toàn:** Được phát triển bởi Chris Titus Tech',
+      'chris titus': 'CTT Tool (Chris Titus Tech Tool) là bộ công cụ tối ưu Windows:\n\n🛠️ **Tính năng:**\n• Tối ưu Windows services\n• Vô hiệu hóa telemetry\n• Tối ưu privacy settings\n• Performance tweaks\n\n📁 **Tải về:** Vào mục Optimization Tools trong Resources\n\n🔒 **An toàn:** Được phát triển bởi Chris Titus Tech',
+      
+      // Memory management
+      'mem reduct': 'Mem Reduct là công cụ quản lý bộ nhớ RAM:\n\n💾 **Tính năng:**\n• Giải phóng RAM tự động\n• Theo dõi sử dụng bộ nhớ\n• Tối ưu memory usage\n• Giảm memory leaks\n\n📁 **Tải về:** Vào mục Programme trong Resources\n\n⚙️ **Cài đặt:** Chạy với quyền Admin và cấu hình auto-start',
+      'mem': 'Mem Reduct là công cụ quản lý bộ nhớ RAM:\n\n💾 **Tính năng:**\n• Giải phóng RAM tự động\n• Theo dõi sử dụng bộ nhớ\n• Tối ưu memory usage\n• Giảm memory leaks\n\n📁 **Tải về:** Vào mục Programme trong Resources\n\n⚙️ **Cài đặt:** Chạy với quyền Admin và cấu hình auto-start',
+      'reduct': 'Mem Reduct là công cụ quản lý bộ nhớ RAM:\n\n💾 **Tính năng:**\n• Giải phóng RAM tự động\n• Theo dõi sử dụng bộ nhớ\n• Tối ưu memory usage\n• Giảm memory leaks\n\n📁 **Tải về:** Vào mục Programme trong Resources\n\n⚙️ **Cài đặt:** Chạy với quyền Admin và cấu hình auto-start',
+      'reduce memory': 'Reduce Memory là công cụ giảm sử dụng RAM:\n\n📉 **Tính năng:**\n• Giải phóng RAM ngay lập tức\n• Giảm memory usage\n• Tối ưu cho máy yếu\n• Giao diện đơn giản\n\n📁 **Tải về:** Vào mục Programme trong Resources\n\n💡 **Phù hợp:** Máy tính có RAM thấp',
+      'reduce': 'Reduce Memory là công cụ giảm sử dụng RAM:\n\n📉 **Tính năng:**\n• Giải phóng RAM ngay lập tức\n• Giảm memory usage\n• Tối ưu cho máy yếu\n• Giao diện đơn giản\n\n📁 **Tải về:** Vào mục Programme trong Resources\n\n💡 **Phù hợp:** Máy tính có RAM thấp',
+      
+      // Windows Lite versions
+      'ghostspectre': 'GhostSpectre là Windows tùy chỉnh nhẹ và tối ưu:\n\n👻 **Các phiên bản:**\n• Win 10 AIO - Tất cả trong một\n• Win 11 22H2 - Ổn định\n• Win 11 23H2 - Cập nhật mới\n• Win 11 24H2 - Phiên bản mới nhất\n\n📁 **Tải về:** Vào mục Windows Lite trong Resources\n\n🚀 **Ưu điểm:** Nhẹ, nhanh, ổn định',
+      'ghost': 'GhostSpectre là Windows tùy chỉnh nhẹ và tối ưu:\n\n👻 **Các phiên bản:**\n• Win 10 AIO - Tất cả trong một\n• Win 11 22H2 - Ổn định\n• Win 11 23H2 - Cập nhật mới\n• Win 11 24H2 - Phiên bản mới nhất\n\n📁 **Tải về:** Vào mục Windows Lite trong Resources\n\n🚀 **Ưu điểm:** Nhẹ, nhanh, ổn định',
+      'ghost spectre': 'GhostSpectre là Windows tùy chỉnh nhẹ và tối ưu:\n\n👻 **Các phiên bản:**\n• Win 10 AIO - Tất cả trong một\n• Win 11 22H2 - Ổn định\n• Win 11 23H2 - Cập nhật mới\n• Win 11 24H2 - Phiên bản mới nhất\n\n📁 **Tải về:** Vào mục Windows Lite trong Resources\n\n🚀 **Ưu điểm:** Nhẹ, nhanh, ổn định',
+      'tiny': 'Tiny Windows là phiên bản Windows siêu nhẹ:\n\n🔸 **Tiny 10:**\n• Windows 10 22H2 siêu nhẹ\n• Chỉ ~2GB RAM sử dụng\n• Phù hợp máy cũ\n\n🔸 **Tiny 11 Core:**\n• Windows 11 22H2 core\n• Hiệu năng cao\n• Ít tính năng không cần thiết\n\n📁 **Tải về:** Vào mục Windows Lite trong Resources\n\n💻 **Phù hợp:** Máy tính cũ, RAM thấp',
+      'tiny10': 'Tiny Windows là phiên bản Windows siêu nhẹ:\n\n🔸 **Tiny 10:**\n• Windows 10 22H2 siêu nhẹ\n• Chỉ ~2GB RAM sử dụng\n• Phù hợp máy cũ\n\n🔸',
+      'tiny11': 'Tiny Windows là phiên bản Windows siêu nhẹ:\n\n🔸 **Tiny 11 Core:**\n• Windows 11 22H2 core\n• Hiệu năng cao\n• Ít tính năng không cần thiết\n\n📁 **Tải về:** Vào mục Windows Lite trong Resources\n\n💻 **Phù hợp:** Máy tính cũ, RAM thấp',
+      
+      // Advanced tools
+      'amewizard': 'AmeWizard là công cụ tối ưu Windows nâng cao:\n\n🔮 **Tính năng:**\n• Tối ưu Windows services\n• Customization nâng cao\n• Performance tweaks\n• Privacy optimization\n\n📁 **Tải về:** Vào mục Playbook & AmeWizard trong Resources\n\n⚙️ **Cách cài đặt:**\n1. Tải AmeWizard từ Resources\n2. Chạy file .exe với quyền Administrator\n3. Chọn các tùy chọn tối ưu phù hợp\n4. Click Apply để áp dụng\n5. Restart máy tính\n\n💡 **Lưu ý:** Backup dữ liệu trước khi cài đặt!',
+      'ame': 'AmeWizard là công cụ tối ưu Windows nâng cao:\n\n🔮 **Tính năng:**\n• Tối ưu Windows services\n• Customization nâng cao\n• Performance tweaks\n• Privacy optimization\n\n📁 **Tải về:** Vào mục Playbook & AmeWizard trong Resources\n\n⚙️ **Cách cài đặt:**\n1. Tải AmeWizard từ Resources\n2. Chạy file .exe với quyền Administrator\n3. Chọn các tùy chọn tối ưu phù hợp\n4. Click Apply để áp dụng\n5. Restart máy tính\n\n💡 **Lưu ý:** Backup dữ liệu trước khi cài đặt!',
+      'revios': 'ReviOS là Windows tùy chỉnh tối ưu:\n\n🔄 **Tính năng:**\n• Windows 10 21H2 tối ưu\n• Performance improvements\n• Gaming optimizations\n• Privacy focused\n\n📁 **Tải về:** Vào mục Playbook & AmeWizard trong Resources\n\n📖 **Cách thêm Playbook (theo tài liệu chính thức):**\n\n🔧 **Chuẩn bị hệ thống:**\n1. Cài đặt tất cả Windows Updates và restart nhiều lần\n2. Gỡ bỏ antivirus và tweaking tools\n3. Tắt OneDrive\n4. Backup dữ liệu quan trọng\n\n⚙️ **Vô hiệu hóa bảo mật:**\n1. Mở AME Beta và chọn playbook\n2. Hoàn thành action "Disable Security"\n3. Sử dụng Windows Security để tắt các dịch vụ\n4. Xác nhận hoàn thành để mở khóa "Next"\n\n🚀 **Áp dụng Playbook:**\n1. Click "Next" và đồng ý điều khoản\n2. Chọn features hoặc dùng mặc định\n3. Đặt credentials (nhớ lưu lại!)\n4. Chờ hệ thống tự động restart\n\n🎮 **Phù hợp:** Gaming và công việc',
+      'revi': 'ReviOS là Windows tùy chỉnh tối ưu:\n\n🔄 **Tính năng:**\n• Windows 10 21H2 tối ưu\n• Performance improvements\n• Gaming optimizations\n• Privacy focused\n\n📁 **Tải về:** Vào mục Playbook & AmeWizard trong Resources\n\n📖 **Cách thêm Playbook (theo tài liệu chính thức):**\n\n🔧 **Chuẩn bị hệ thống:**\n1. Cài đặt tất cả Windows Updates và restart nhiều lần\n2. Gỡ bỏ antivirus và tweaking tools\n3. Tắt OneDrive\n4. Backup dữ liệu quan trọng\n\n⚙️ **Vô hiệu hóa bảo mật:**\n1. Mở AME Beta và chọn playbook\n2. Hoàn thành action "Disable Security"\n3. Sử dụng Windows Security để tắt các dịch vụ\n4. Xác nhận hoàn thành để mở khóa "Next"\n\n🚀 **Áp dụng Playbook:**\n1. Click "Next" và đồng ý điều khoản\n2. Chọn features hoặc dùng mặc định\n3. Đặt credentials (nhớ lưu lại!)\n4. Chờ hệ thống tự động restart\n\n🎮 **Phù hợp:** Gaming và công việc',
+      'atlas': 'Atlas là Windows tối ưu hiệu năng:\n\n🗺️ **Tính năng:**\n• Windows 10 21H2 optimized\n• Performance focused\n• Gaming optimizations\n• Privacy enhancements\n\n📁 **Tải về:** Vào mục Playbook & AmeWizard trong Resources\n\n📖 **Cách thêm Playbook (theo tài liệu chính thức):**\n\n🔧 **Chuẩn bị hệ thống:**\n1. Cài đặt tất cả Windows Updates và restart nhiều lần\n2. Gỡ bỏ antivirus và tweaking tools\n3. Tắt OneDrive\n4. Backup dữ liệu quan trọng\n\n⚙️ **Vô hiệu hóa bảo mật:**\n1. Mở AME Beta và chọn playbook\n2. Hoàn thành action "Disable Security"\n3. Sử dụng Windows Security để tắt các dịch vụ\n4. Xác nhận hoàn thành để mở khóa "Next"\n\n🚀 **Áp dụng Playbook:**\n1. Click "Next" và đồng ý điều khoản\n2. Chọn features hoặc dùng mặc định\n3. Đặt credentials (nhớ lưu lại!)\n4. Chờ hệ thống tự động restart\n\n⚡ **Ưu điểm:** Hiệu năng cao, ổn định',
+      
+      // Playbook specific
+      'playbook': 'Playbook là bộ công cụ tối ưu bổ sung cho Windows tùy chỉnh:\n\n📖 **Tính năng:**\n• Tối ưu hiệu năng nâng cao\n• Customization bổ sung\n• Performance tweaks\n• Privacy enhancements\n\n📁 **Tải về:** Vào mục Playbook & AmeWizard trong Resources\n\n⚙️ **Cách sử dụng (theo tài liệu chính thức):**\n\n🔧 **Chuẩn bị hệ thống:**\n1. Cài đặt tất cả Windows Updates và restart nhiều lần\n2. Gỡ bỏ antivirus và tweaking tools\n3. Tắt OneDrive\n4. Backup dữ liệu quan trọng\n\n⚙️ **Vô hiệu hóa bảo mật:**\n1. Mở AME Beta và chọn playbook\n2. Hoàn thành action "Disable Security"\n3. Sử dụng Windows Security để tắt các dịch vụ\n4. Xác nhận hoàn thành để mở khóa "Next"\n\n🚀 **Áp dụng Playbook:**\n1. Click "Next" và đồng ý điều khoản\n2. Chọn features hoặc dùng mặc định\n3. Đặt credentials (nhớ lưu lại!)\n4. Chờ hệ thống tự động restart\n\n💡 **Lưu ý:** Chỉ dùng sau khi đã cài Windows tùy chỉnh!\n\n📚 **Tài liệu tham khảo:** [docs.ameliorated.io](https://docs.ameliorated.io/installing_playbooks/playbook_apply.html)',
+      
+      // Download and installation
+      'download': 'Bạn có thể tải RimikoOS từ trang sản phẩm:\n• RimikoOS 10 V5 UPDATE\n• RimikoOS 11 V2 (có/không Defender)\n\nTất cả đều miễn phí!\n\nHướng dẫn tải:\n1. Vào trang sản phẩm\n2. Chọn phiên bản phù hợp\n3. Click nút Download\n4. Chờ tải xong file ISO\n5. Tạo USB boot để cài đặt\n\nBạn muốn tải phiên bản nào?',
+      'tải': 'Để tải RimikoOS:\n1. Vào trang sản phẩm\n2. Chọn phiên bản phù hợp\n3. Click Download\n4. Tạo USB boot để cài đặt\n\nCác phiên bản có sẵn:\n• RimikoOS 10 V5 UPDATE - Ổn định, nhẹ\n• RimikoOS 11 V2 (không Defender) - Hiệu năng cao\n• RimikoOS 11 V2 (có Defender) - Bảo mật tốt\n\nBạn muốn tải phiên bản nào?',
+      'cài đặt': 'Hướng dẫn cài đặt RimikoOS chi tiết:\n\nCHUẨN BỊ:\n1. USB 8GB trở lên\n2. Tải Rufus (công cụ tạo USB boot)\n3. Tải file ISO RimikoOS\n\nCÁC BƯỚC CÀI ĐẶT:\n1. Tải file ISO từ trang sản phẩm\n2. Cài đặt và mở Rufus\n3. Chọn USB và file ISO\n4. Click Start để tạo USB boot\n5. Restart máy tính\n6. Boot từ USB (F12 hoặc Del)\n7. Chọn Install RimikoOS\n8. Làm theo hướng dẫn cài đặt\n\nLưu ý: Backup dữ liệu trước khi cài đặt!\n\nCần hỗ trợ chi tiết không?',
+      'cài': 'Cài đặt RimikoOS:\n• Tải ISO từ trang sản phẩm\n• Tạo USB boot\n• Boot và cài đặt\n\nHướng dẫn chi tiết có trong Discord!\n\nCác bước cụ thể:\n1. Tải file ISO RimikoOS\n2. Tải Rufus từ rufus.ie\n3. Mở Rufus, chọn USB và ISO\n4. Click Start, chờ hoàn thành\n5. Restart máy, boot từ USB\n6. Chọn Install và làm theo hướng dẫn\n\nQuan trọng: Backup dữ liệu trước khi cài!',
+      
+      // Tools and resources
+      'công cụ': 'Các công cụ chính:\n• Optimization Tools\n• Windows Lite\n• Toolkit\n• VPN\n• AI Tools\n• Steam\n\nBạn quan tâm công cụ nào?\n\nMỗi công cụ có chức năng riêng:\n• Optimization: Tối ưu Windows\n• Windows Lite: Hệ điều hành nhẹ\n• Toolkit: Bộ công cụ tổng hợp',
+      'tool': 'Các công cụ chính:\n• Optimization Tools\n• Windows Lite\n• Toolkit\n• VPN\n• AI Tools\n• Steam\n\nBạn quan tâm công cụ nào?\n\nMỗi công cụ có chức năng riêng:\n• Optimization: Tối ưu Windows\n• Windows Lite: Hệ điều hành nhẹ\n• Toolkit: Bộ công cụ tổng hợp',
+      
+      // Support and help
+      'lỗi': 'Nếu gặp lỗi:\n• Liên hệ Discord: https://dsc.gg/rimikocommunity\n• Facebook: https://www.facebook.com/rimikocommunity\n• YouTube: @RimikoDC\n\nChúng tôi sẽ hỗ trợ ngay!',
+      'vấn đề': 'Gặp vấn đề gì vậy? Bạn có thể:\n• Liên hệ Discord để được hỗ trợ trực tiếp\n• Xem hướng dẫn trên YouTube\n• Tham gia cộng đồng Facebook',
+      'help': 'Tôi có thể giúp bạn:\n• Tìm hiểu RimikoOS\n• Hướng dẫn tối ưu Windows\n• Giải đáp về công cụ\n• Hỗ trợ kỹ thuật\n\nBạn cần hỗ trợ gì cụ thể?',
+      'hỗ trợ': 'Tôi sẵn sàng hỗ trợ bạn về:\n• RimikoOS và sản phẩm\n• Tối ưu Windows\n• Công cụ và tài nguyên\n• Vấn đề kỹ thuật\n\nHãy cho tôi biết bạn cần gì!',
+      
+      // Greetings
+      'xin chào': 'Chào bạn! 👋 Tôi là AI trợ lý của Rimiko Community. Tôi có thể giúp bạn tìm hiểu về RimikoOS, tối ưu Windows, và các công cụ khác. Bạn cần hỗ trợ gì không?',
+      'hello': 'Xin chào! Tôi là trợ lý AI của Rimiko Community. Tôi có thể giúp gì cho bạn hôm nay?',
+      'hi': 'Chào bạn! Chào mừng đến với Rimiko Community. Tôi có thể giúp gì cho bạn?',
+      // Donation
+      'donate': 'Cảm ơn bạn muốn ủng hộ! 💝\n\nThông tin thanh toán:\n🏦 Ngân hàng: MB Bank\n👤 Chủ TK: NGUYEN TRONG TAI\n💳 Số TK: 0377608318\n📝 Nội dung: Donate để Owner có tiền phát triển\n\nMọi đóng góp đều được sử dụng để phát triển cộng đồng!',
+      'ủng hộ': 'Cảm ơn bạn muốn ủng hộ Rimiko Community! 💝\n\nThông tin thanh toán đã có trong chat. Mọi đóng góp đều được sử dụng để phát triển cộng đồng và tạo ra nhiều sản phẩm tốt hơn!',
+      
+      // Thanks
+      'cảm ơn': 'Không có gì! 😊 Nếu cần hỗ trợ thêm, hãy liên hệ qua Discord hoặc Facebook nhé!',
+      'thanks': 'Không có gì! 😊 Tôi luôn sẵn sàng hỗ trợ bạn!',
+      
+      // General questions
+      'gì': 'Tôi có thể giúp bạn:\n• Tìm hiểu RimikoOS\n• Hướng dẫn tối ưu Windows\n• Giải đáp về công cụ\n• Hỗ trợ kỹ thuật\n\nBạn muốn biết gì cụ thể?',
+      'là gì': 'Rimiko Community là cộng đồng phát triển Windows tùy chỉnh và các công cụ tối ưu hóa. Chúng tôi tạo ra RimikoOS - phiên bản Windows nhẹ, tối ưu hiệu năng.',
+      'thế nào': 'Tôi có thể hướng dẫn bạn:\n• Cách tải và cài đặt RimikoOS\n• Cách tối ưu Windows\n• Sử dụng các công cụ\n\nBạn muốn biết cách làm gì?'
+    };
+    
+    // Check for keyword matches with better logic
+    for (const [keyword, response] of Object.entries(fallbackResponses)) {
+      if (lowerMessage.includes(keyword)) {
+        return response;
+      }
+    }
+    
+    // If no specific keyword found, try to understand the intent
+    if (lowerMessage.includes('làm sao') || lowerMessage.includes('cách') || lowerMessage.includes('hướng dẫn')) {
+      return 'Tôi có thể hướng dẫn bạn:\n• Cách tải và cài đặt RimikoOS\n• Cách tối ưu Windows\n• Sử dụng các công cụ\n\nBạn muốn hướng dẫn cụ thể về gì?';
+    }
+    
+    if (lowerMessage.includes('miễn phí') || lowerMessage.includes('giá') || lowerMessage.includes('tiền')) {
+      return 'Tất cả sản phẩm của Rimiko Community đều miễn phí! 🎉\n\n• RimikoOS: Miễn phí\n• Công cụ tối ưu: Miễn phí\n• Hỗ trợ: Miễn phí\n\nChỉ cần donate nếu bạn muốn ủng hộ phát triển!';
+    }
+    
+    // Default response with more helpful suggestions
+    return 'Tôi hiểu bạn đang hỏi về Rimiko Community! 😊\n\nTôi có thể giúp bạn:\n• Tìm hiểu về RimikoOS và sản phẩm\n• Hướng dẫn tối ưu Windows\n• Giải đáp về công cụ và tài nguyên\n• Hỗ trợ kỹ thuật\n\nHoặc bạn có thể liên hệ trực tiếp qua Discord: https://dsc.gg/rimikocommunity\n\nBạn muốn biết gì cụ thể?';
+  }
+
+  // Handle send message
+  async function handleSendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    // Clear input
+    chatInput.value = '';
+
+    // Add user message
+    addUserMessage(message);
+
+    // Check for keyword response first
+    const keywordResponse = getFallbackResponse(message);
+    const hasKeywordMatch = keywordResponse !== 'Tôi hiểu bạn đang hỏi về Rimiko Community! 😊\n\nTôi có thể giúp bạn:\n• Tìm hiểu về RimikoOS và sản phẩm\n• Hướng dẫn tối ưu Windows\n• Giải đáp về công cụ và tài nguyên\n• Hỗ trợ kỹ thuật\n\nHoặc bạn có thể liên hệ trực tiếp qua Discord: https://dsc.gg/rimikocommunity\n\nBạn muốn biết gì cụ thể?';
+
+    if (hasKeywordMatch) {
+      // If keyword match found, use keyword response with typing effect
+      const typingIndicator = addTypingIndicator();
+      
+      setTimeout(() => {
+        removeTypingIndicator(typingIndicator);
+        typeMessage(keywordResponse);
+      }, 1000);
+    } else {
+      // If no keyword match, use ChatGPT API
+      const typingIndicator = addTypingIndicator();
+
+      try {
+        // Simulate typing delay for better UX
+        await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+        
+        // Get AI response
+        const aiResponse = await callChatGPT(message);
+        
+        // Remove typing indicator
+        removeTypingIndicator(typingIndicator);
+        
+        // Add AI response with typing effect
+        typeMessage(aiResponse);
+      } catch (error) {
+        // Remove typing indicator
+        removeTypingIndicator(typingIndicator);
+        
+        // Show error message
+        addAIMessage('Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau hoặc liên hệ qua Discord: https://dsc.gg/rimikocommunity');
+      }
+    }
+  }
+
+  // Send message on Enter key
+  chatInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      handleSendMessage();
+    }
+  });
+
+  // Send message on button click
+  sendButton.addEventListener('click', handleSendMessage);
+});
 
 
 
