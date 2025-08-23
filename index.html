@@ -2,25 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Rimiko Community - Nền Tảng Công Nghệ Mạng</title>
     <meta name="description" content="Tổng Hợp Tools Fix Lag Windows,Window Lite Mang Đến Trải Nghiệm Mượt Mà Cho Người Dùng." />
-    <meta name="theme-color" content="#7c3aed" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="format-detection" content="telephone=no" />
     <link rel="icon" href="./logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap&subset=vietnamese" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap&subset=vietnamese" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap&subset=vietnamese" rel="stylesheet">
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap&subset=vietnamese" rel="stylesheet">
-    </noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap&subset=vietnamese" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap&subset=vietnamese" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="./styles.css?v=2" />
-    <link rel="stylesheet" href="./mobile-optimizations.css?v=1" />
+    <link rel="stylesheet" href="./styles.css?v=1" />
   </head>
   <body>
     <header class="site-header">
@@ -200,7 +191,7 @@
       </div>
     </footer>
 
-    <script src="./script.js?v=2" defer></script>
+    <script src="./script.js?v=1"></script>
     
     <!-- Mini Chat Widget -->
     <div class="chat-widget" id="chatWidget">
@@ -262,7 +253,7 @@
               <div class="message-text">
                 <strong>📱 QR Code:</strong><br>
                 <div class="qr-image">
-                  <img src="assets/privacy/qrcode.jpg" alt="QR Code" />
+                  <img src="./assets/privacy/qrcode.jpg" alt="QR Code" />
                 </div>
               </div>
             </div>
@@ -279,25 +270,10 @@
         </div>
         
         <div class="chat-input">
-          <div class="chat-input-controls">
-            <button class="chat-input-btn" id="voiceBtn" title="Ghi âm">
-              <i class="fas fa-microphone"></i>
-            </button>
-            <button class="chat-input-btn" id="imageBtn" title="Gửi ảnh">
-              <i class="fas fa-image"></i>
-            </button>
-            <button class="chat-input-btn" title="Emoji">
-              <i class="fas fa-smile"></i>
-            </button>
-          </div>
           <div class="chat-input-field">
             <input type="text" placeholder="Nhập tin nhắn..." id="chatInput">
-            <input type="file" id="imageInput" accept="image/*" style="display: none;">
           </div>
           <div class="chat-input-actions">
-            <button class="chat-input-btn" title="Emoji">
-              <i class="far fa-smile"></i>
-            </button>
             <button class="chat-input-btn" id="sendBtn" title="Gửi">
               <i class="far fa-paper-plane"></i>
             </button>

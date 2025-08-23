@@ -31,7 +31,7 @@ carousel?.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') scrollByCard(-1);
 });
 
-// Enhanced drag to scroll with optimized performance
+// Drag to scroll with smooth mouse-drag and native touch inertia
 let isDragging = false;
 let isMouseDrag = false;
 let dragStartX = 0;
@@ -45,12 +45,6 @@ let momentumId = 0;
 // Performance optimization variables
 let isScrolling = false;
 let scrollTimeout = null;
-let resizeTimeout = null;
-let scrollThrottle = null;
-
-// Mobile detection
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 function getPointX(e) {
   return e.touches ? e.touches[0].pageX : (e.pageX ?? (e.clientX || 0));
@@ -108,10 +102,6 @@ function startMomentum(initialVelocityPxPerMs) {
 
 function onPointerDown(e) {
   if (!carousel) return;
-  
-  // Prevent default behavior for better mobile experience
-  e.preventDefault();
-  
   isDragging = true;
   isMouseDrag = !(e.touches || e.pointerType === 'touch');
   dragStartX = getPointX(e);
@@ -120,247 +110,121 @@ function onPointerDown(e) {
   lastMoveTime = performance.now();
   velocityX = 0;
   stopMomentum();
-  
-  // Add dragging class with optimized performance
   carousel.classList.add('is-dragging');
-  
-  // Set cursor style
-  if (!isTouchDevice) {
-    carousel.style.cursor = 'grabbing';
-  }
 }
 
 function onPointerMove(e) {
   if (!isDragging) return;
-  
   const pointX = getPointX(e);
   const deltaX = pointX - dragStartX;
 
-  // Enhanced touch handling for mobile
-  if (!isMouseDrag) {
-    // For touch devices, use native scrolling with optimized handling
-    if (isMobile) {
-      // Prevent default only if we're actually dragging
-      if (Math.abs(deltaX) > 10) {
-        e.preventDefault();
-      }
-    }
-    return;
-  }
+  // Let touch devices use native scrolling for the smoothest inertia
+  if (!isMouseDrag) return;
 
-  // Mouse drag handling with improved performance
   const now = performance.now();
   const dt = Math.max(1, now - lastMoveTime);
   const dx = pointX - lastMoveX;
-  
-  // Enhanced velocity calculation with better stability
+  // Low-pass filter for velocity for stability
   const instantV = dx / dt; // px/ms
-  velocityX = 0.8 * velocityX + 0.2 * instantV;
+  velocityX = 0.85 * velocityX + 0.15 * instantV;
   lastMoveX = pointX;
   lastMoveTime = now;
 
-  // Natural scroll: invert
+  // natural scroll: invert
   const target = dragStartScrollLeft - deltaX;
   scheduleScrollLeft(target);
-  
-  // Prevent text selection while dragging
-  e.preventDefault();
+  // Prevent text selection while dragging with mouse
+  e.preventDefault?.();
 }
 
 function onPointerUp() {
   if (!isDragging) return;
-  
   isDragging = false;
-  
-  // Remove dragging class and reset cursor
   carousel.classList.remove('is-dragging');
-  if (!isTouchDevice) {
-    carousel.style.cursor = 'grab';
-  }
-  
-  // Apply momentum only for mouse drags with enhanced handling
+  // Apply momentum only for mouse drags
   if (isMouseDrag) {
     // Convert to px/ms towards scrollLeft direction (invert)
     const v = velocityX;
-    if (Math.abs(v) > 0.05) { // Increased threshold for better UX
+    if (Math.abs(v) > 0.02) {
       startMomentum(v);
     }
   }
-  
-  // Reset velocity
-  velocityX = 0;
 }
 
 if (carousel) {
-  // Enhanced event listeners with optimized performance
-  if (!isTouchDevice) {
-    // Mouse drag (manual) - only for non-touch devices
-    carousel.addEventListener('mousedown', onPointerDown);
-    window.addEventListener('mouseup', onPointerUp);
-    window.addEventListener('mousemove', onPointerMove);
-  }
-  
-  // Touch events with optimized handling
-  carousel.addEventListener('touchstart', onPointerDown, { passive: false });
+  // Mouse drag (manual)
+  carousel.addEventListener('mousedown', onPointerDown);
+  window.addEventListener('mouseup', onPointerUp);
+  window.addEventListener('mousemove', onPointerMove);
+  // Touch: rely on native scrolling (no manual scrollLeft updates)
+  carousel.addEventListener('touchstart', onPointerDown, { passive: true });
   carousel.addEventListener('touchend', onPointerUp, { passive: true });
   carousel.addEventListener('touchcancel', onPointerUp, { passive: true });
-  
-  // Set initial cursor for desktop
-  if (!isTouchDevice) {
-    carousel.style.cursor = 'grab';
-  }
 }
 
-// Enhanced carousel button management with throttling
+// Show/hide next/prev buttons at the edges
 function updateCarouselButtons() {
   if (!carousel || !prev || !next) return;
-  
   const scrollable = carousel.scrollWidth > carousel.clientWidth + 1;
-  const maxScroll = Math.max(0, carousel.scrollWidth - carousel.clientWidth - 1);
+  const maxScroll = Math.max(0, carousel.scrollWidth - carousel.clientWidth - 1); // subtract 1 to avoid float rounding
   const atStart = carousel.scrollLeft <= 1;
   const atEnd = carousel.scrollLeft >= maxScroll;
-  
-  // Enhanced button visibility logic
-  const shouldHidePrev = atStart || !scrollable;
-  const shouldHideNext = atEnd || !scrollable;
-  
-  // Smooth transitions for button visibility
-  if (shouldHidePrev !== prev.classList.contains('is-hidden')) {
-    prev.classList.toggle('is-hidden', shouldHidePrev);
-  }
-  
-  if (shouldHideNext !== next.classList.contains('is-hidden')) {
-    next.classList.toggle('is-hidden', shouldHideNext);
-  }
+  // If not scrollable at all, hide both buttons
+  prev.classList.toggle('is-hidden', atStart || !scrollable);
+  next.classList.toggle('is-hidden', atEnd || !scrollable);
 }
 
-// Throttled scroll handler for better performance
-function throttledUpdateCarouselButtons() {
-  if (scrollThrottle) return;
-  
-  scrollThrottle = requestAnimationFrame(() => {
-    updateCarouselButtons();
-    scrollThrottle = null;
-  });
-}
-
-// Enhanced event listeners with throttling
-carousel?.addEventListener('scroll', throttledUpdateCarouselButtons, { passive: true });
-
-// Debounced resize handler
-function debouncedResizeHandler() {
-  if (resizeTimeout) clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(() => {
-    updateCarouselButtons();
-  }, 150);
-}
-
-window.addEventListener('resize', debouncedResizeHandler);
-
-// Initial setup
+// Update on scroll and on load
+carousel?.addEventListener('scroll', updateCarouselButtons, { passive: true });
+window.addEventListener('resize', updateCarouselButtons);
 updateCarouselButtons();
 
 // Footer year
 const yearSpan = document.getElementById('year');
 if (yearSpan) yearSpan.textContent = String(new Date().getFullYear());
 
-// Enhanced mobile navigation with improved UX
-navToggle?.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  
+// Mobile nav toggle
+navToggle?.addEventListener('click', () => {
   const isOpen = nav?.classList.toggle('is-open');
   navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  
-  // Enhanced mobile menu behavior
-  if (isOpen) {
-    // Prevent body scroll when menu is open
-    document.body.style.overflow = 'hidden';
-    
-    // Focus management for accessibility
-    const firstNavLink = navList?.querySelector('a');
-    if (firstNavLink) {
-      setTimeout(() => firstNavLink.focus(), 100);
-    }
-  } else {
-    // Restore body scroll
-    document.body.style.overflow = '';
-  }
 });
 
-// Enhanced navigation link handling with improved mobile UX
+// Close menu on link click (mobile)
 navList?.addEventListener('click', (e) => {
   const link = e.target.closest('a');
   if (!link) return;
 
+  // Close mobile menu if open
+  if (nav?.classList.contains('is-open')) {
+    nav.classList.remove('is-open');
+    navToggle?.setAttribute('aria-expanded', 'false');
+  }
+
   const href = link.getAttribute('href');
   if (!href) return;
 
-  // Enhanced mobile menu handling
-  if (nav?.classList.contains('is-open')) {
-    nav.classList.remove('is-open');
-    navToggle?.setAttribute('aria-expanded', 'false');
-    // Restore body scroll
-    document.body.style.overflow = '';
-  }
-
-  // Enhanced smooth scrolling for specific anchors
+  // Smooth scroll for specific anchors
   if (href === '#products') {
     e.preventDefault();
-    const targetSection = productsSection;
-    if (targetSection) {
-      const headerHeight = header?.offsetHeight || 0;
-      const targetPosition = targetSection.offsetTop - headerHeight - 20;
-      
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-      history.replaceState(null, '', '#products');
-    }
+    productsSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    history.replaceState(null, '', '#products');
   } else if (href === '#home') {
     e.preventDefault();
-    window.scrollTo({ 
-      top: 0, 
-      behavior: 'smooth' 
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     history.replaceState(null, '', '#home');
-  } else if (href === '#resources') {
-    e.preventDefault();
-    const resourcesSection = document.querySelector('#resources');
-    if (resourcesSection) {
-      const headerHeight = header?.offsetHeight || 0;
-      const targetPosition = resourcesSection.offsetTop - headerHeight - 20;
-      
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-      history.replaceState(null, '', '#resources');
-    }
   }
 });
 
-// Enhanced home anchor handling with improved UX
+// Ensure any link to #home (e.g., brand logo) scrolls to very top (0)
 document.addEventListener('click', (e) => {
   const homeAnchor = e.target?.closest?.('a[href="#home"]');
   if (!homeAnchor) return;
-  
   e.preventDefault();
-  
-  // Enhanced smooth scroll to top
-  window.scrollTo({ 
-    top: 0, 
-    behavior: 'smooth' 
-  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   history.replaceState(null, '', '#home');
-  
-  // Enhanced mobile menu handling
   if (nav?.classList.contains('is-open')) {
     nav.classList.remove('is-open');
     navToggle?.setAttribute('aria-expanded', 'false');
-    // Restore body scroll
-    document.body.style.overflow = '';
   }
 });
 
@@ -487,55 +351,22 @@ const observer = new IntersectionObserver((entries) => {
 
 sections.forEach(sec => observer.observe(sec));
 
-// Enhanced products section handling with improved positioning
+// If landing with #products in URL, center it after load
 if (location.hash === '#products' && productsSection) {
   setTimeout(() => {
-    const headerHeight = header?.offsetHeight || 0;
-    const targetPosition = productsSection.offsetTop - headerHeight - 20;
-    
-    window.scrollTo({
-      top: targetPosition,
-      behavior: 'smooth'
-    });
-  }, 100); // Slightly longer delay for better page load
+    productsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 0);
 }
 
-// Enhanced scroll handling with throttling
-let scrollThrottleId = null;
-
+// Header shadow + progress bar
 function onScroll() {
-  if (scrollThrottleId) return;
-  
-  scrollThrottleId = requestAnimationFrame(() => {
-    const y = window.scrollY || document.documentElement.scrollTop;
-    
-    // Enhanced header shadow with smooth transition
-    if (header) {
-      const shadow = y > 6 ? '0 6px 16px rgba(0,0,0,.12)' : 'none';
-      if (header.style.boxShadow !== shadow) {
-        header.style.boxShadow = shadow;
-      }
-    }
-    
-    // Enhanced progress bar with smooth animation
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = Math.max(0, Math.min(1, y / (max || 1)));
-    
-    if (progress) {
-      const width = `${pct * 100}%`;
-      if (progress.style.width !== width) {
-        progress.style.width = width;
-      }
-    }
-    
-    scrollThrottleId = null;
-  });
+  const y = window.scrollY || document.documentElement.scrollTop;
+  if (header) header.style.boxShadow = y > 6 ? '0 6px 16px rgba(0,0,0,.08)' : 'none';
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = Math.max(0, Math.min(1, y / (max || 1)));
+  if (progress) progress.style.width = `${pct * 100}%`;
 }
-
-// Optimized scroll listener
 window.addEventListener('scroll', onScroll, { passive: true });
-
-// Initial call
 onScroll();
 
 // No 3D: CSS retro computer is rendered in HTML/CSS
@@ -621,27 +452,19 @@ function startTypewriterSequence() {
   showNextText();
 }
 
-// Enhanced typewriter initialization with performance optimization
+// Start typewriter when page loads
 function initTypewriter() {
   console.log('Initializing typewriter...');
-  
-  // Check if element exists before starting
-  const typewriterElement = document.getElementById('typewriter');
-  if (!typewriterElement) {
-    console.error('Typewriter element not found!');
-    return;
-  }
-  
-  // Start with a shorter delay for better UX
-  setTimeout(startTypewriterSequence, 800);
+  setTimeout(startTypewriterSequence, 1000);
 }
 
-// Optimized initialization
+document.addEventListener('DOMContentLoaded', initTypewriter);
+
+// Also try to start immediately if DOM is already loaded
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initTypewriter);
 } else {
-  // DOM already loaded, start immediately
-  setTimeout(initTypewriter, 100);
+  initTypewriter();
 }
 
 // Mini Chat Widget Functionality
@@ -656,48 +479,46 @@ document.addEventListener('DOMContentLoaded', function() {
   const chatInput = document.querySelector('.chat-input-field input');
   const sendButton = document.querySelector('.chat-input-actions .fa-paper-plane').parentElement;
 
-  // Enhanced smart auto-scroll variables
+  // Smart auto-scroll variables
   let userHasScrolled = false;
   let isUserAtBottom = true;
-  let scrollThrottleChat = null;
 
-  // Enhanced check if user is at bottom of chat
+  // Check if user is at bottom of chat
   function isAtBottom() {
-    const threshold = 15; // Increased tolerance for mobile
+    const threshold = 10; // 10px tolerance
     return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
   }
 
-  // Enhanced smart scroll to bottom function with throttling
+  // Smart scroll to bottom function
   function smartScrollToBottom() {
-    if (scrollThrottleChat) return;
-    
-    scrollThrottleChat = requestAnimationFrame(() => {
-      if (!userHasScrolled || isUserAtBottom) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-      scrollThrottleChat = null;
-    });
+    if (!userHasScrolled || isUserAtBottom) {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
   }
 
-  // Enhanced track user scroll behavior with optimized performance
-  let chatScrollThrottle = null;
-  
+  // Track user scroll behavior with performance optimization
   chatMessages.addEventListener('scroll', function() {
-    // Enhanced throttling for better performance
-    if (chatScrollThrottle) return;
+    // Throttle scroll events for better performance
+    if (isScrolling) return;
+    isScrolling = true;
     
-    chatScrollThrottle = requestAnimationFrame(() => {
-      isUserAtBottom = isAtBottom();
-      
-      // Enhanced auto-scroll logic
-      if (isUserAtBottom) {
-        userHasScrolled = false;
-      } else {
-        userHasScrolled = true;
-      }
-      
-      chatScrollThrottle = null;
-    });
+    // Clear previous timeout
+    if (scrollTimeout) clearTimeout(scrollTimeout);
+    
+    // Set new timeout
+    scrollTimeout = setTimeout(() => {
+      isScrolling = false;
+    }, 16); // ~60fps
+    
+    isUserAtBottom = isAtBottom();
+    
+    // If user scrolls to bottom, re-enable auto-scroll
+    if (isUserAtBottom) {
+      userHasScrolled = false;
+    } else {
+      // If user scrolls up, disable auto-scroll
+      userHasScrolled = true;
+    }
   }, { passive: true });
 
   // Enable chat input for AI interaction
@@ -1091,6 +912,46 @@ Bạn cần hỗ trợ gì không? 😊`);
 
   // Send message on button click
   sendButton.addEventListener('click', handleSendMessage);
+  
+  // Fix QR code image loading
+  const qrImage = document.querySelector('.qr-image img');
+  if (qrImage) {
+    qrImage.addEventListener('error', function() {
+      // Try alternative paths if the main path fails
+      const currentSrc = this.src;
+      const alternativePaths = [
+        './assets/privacy/qrcode.jpg',
+        'assets/privacy/qrcode.jpg',
+        '/assets/privacy/qrcode.jpg',
+        '../assets/privacy/qrcode.jpg'
+      ];
+      
+      const currentIndex = alternativePaths.indexOf(currentSrc);
+      const nextIndex = (currentIndex + 1) % alternativePaths.length;
+      
+      if (currentIndex === -1 || currentIndex < alternativePaths.length - 1) {
+        this.src = alternativePaths[nextIndex];
+      } else {
+        // If all paths fail, show a placeholder
+        this.style.display = 'none';
+        const placeholder = document.createElement('div');
+        placeholder.style.cssText = `
+          width: 120px;
+          height: 120px;
+          background: #f0f0f0;
+          border: 2px solid #ddd;
+          border-radius: 8px;
+          color: #666;
+          font-size: 12px;
+          text-align: center;
+          line-height: 120px;
+          margin: 8px auto;
+        `;
+        placeholder.textContent = 'QR Code không tải được';
+        this.parentNode.appendChild(placeholder);
+      }
+    });
+  }
 });
 
 
