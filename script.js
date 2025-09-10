@@ -275,7 +275,7 @@ const translations = {
     'products.description': 'RimikoOS là custom Windows được làm ra dành cho người dùng sử dụng một cách hoàn toàn miễn phí và cũng là những dự án mà Rimiko Development Community đã làm ra.',
     'products.items.1.title': 'RimikoOS 10 V5',
     'products.items.1.desc': 'Bản Windows tuỳ biến hợp tác cùng Moonie nhằm mang lại trải nghiệm Windows Lite mượt mà.',
-    'products.items.2.title': 'RimikoOS 10 (Bản rút gọn)',
+    'products.items.2.title': 'RimikoOS 10 V5 (Bản rút gọn)',
     'products.items.2.desc': 'Bản dựng lại nhẹ hơn của RimikoOS 10 V5, được tối ưu sâu hơn so với bản gốc, với tệp cài đặt nhỏ gọn hơn.',
     'products.items.3.title': 'RimikoOS 11 V2 (Không Defender)',
     'products.items.3.desc': 'Bản Windows 11 tuỳ biến thứ hai hợp tác cùng Moonie, hướng đến hiệu năng nhẹ.',
